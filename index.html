@@ -13,7 +13,6 @@
       --muted:#64748b;
       --line:#e2e8f0;
       --primary:#0f172a;
-      --primary-2:#1e293b;
       --ok:#e8f7ee;
       --low:#fff4d8;
       --buy:#ffe3e3;
@@ -21,7 +20,13 @@
       --radius:20px;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif
+    }
     body{padding:18px}
     .wrap{max-width:860px;margin:0 auto}
     .hero{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:14px}
@@ -49,11 +54,10 @@
     button{
       cursor:pointer;
       font-weight:600;
-      transition:.15s transform ease, .15s opacity ease;
+      transition:.15s transform ease;
     }
     button:active{transform:scale(.99)}
     .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
-    .btn-soft{background:#fff}
     .btn-low{background:#fff7e6}
     .btn-buy{background:#fff0f0}
     .toolbar{display:grid;grid-template-columns:1fr auto auto;gap:10px}
@@ -92,7 +96,7 @@
     <div class="hero">
       <div class="card p20">
         <h1>Compra Mercadona</h1>
-        <div class="sub">Lista sincronizada, sencilla y cómoda para iPhone y ordenador.</div>
+        <div class="sub">Lista sincronizada para iPhone y ordenador.</div>
         <div class="stats">
           <div class="stat"><div class="k">Productos</div><div class="v" id="statTotal">0</div></div>
           <div class="stat"><div class="k">Comprar</div><div class="v" id="statBuy">0</div></div>
@@ -102,10 +106,10 @@
       <div class="card p16">
         <div class="title">Conexión</div>
         <div class="grid">
-          <input id="endpoint" placeholder="Pega aquí tu URL /exec" />
+          <input id="endpoint" value="https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22ro7lwQw5vp2Jy4rWo_fIEKKXLSjKy-CeyhWhAR7sMq6Woy8Q/exec" readonly />
           <div class="grid2">
-            <button class="btn-primary" onclick="saveEndpoint()">Guardar URL</button>
-            <button onclick="loadItems()">Sincronizar</button>
+            <button class="btn-primary" onclick="loadItems()">Sincronizar</button>
+            <button onclick="copyUrl()">Copiar URL</button>
           </div>
         </div>
         <div class="statusline" id="status"></div>
@@ -130,7 +134,7 @@
     <div class="section">
       <div class="section-head">
         <h2>Compra rápida</h2>
-        <div class="hint">Ideal para usar con NFC o desde el móvil</div>
+        <div class="hint">Ideal para móvil y NFC</div>
       </div>
       <div class="card p16">
         <div class="toolbar">
@@ -160,24 +164,26 @@
       <div class="list" id="all"></div>
     </div>
 
-    <div class="footer-note">Se guarda la URL del backend en este navegador. Los datos reales se guardan en Google Sheets.</div>
+    <div class="footer-note">Los datos se guardan en Google Sheets.</div>
   </div>
 
 <script>
-const KEY = "mercadona_sync_endpoint_v2";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22ro7lwQw5vp2Jy4rWo_fIEKKXLSjKy-CeyhWhAR7sMq6Woy8Q/exec";
 let items = [];
 
 function qs(id){ return document.getElementById(id); }
 function statusMsg(t){ qs("status").textContent = t || ""; }
+
 function formatDate(v){
   if(!v) return "—";
   const d = new Date(v);
   return isNaN(d) ? v : d.toLocaleDateString("es-ES");
 }
+
 function todayStr(){
-  const d = new Date();
-  return d.toISOString().slice(0,10);
+  return new Date().toISOString().slice(0,10);
 }
+
 function inferStatus(x){
   if (x.status === "Comprar" || x.status === "Poco") return x.status;
   if (x.lastBought && x.durationDays){
@@ -187,38 +193,57 @@ function inferStatus(x){
   }
   return "OK";
 }
+
 function esc(s){
-  return (s || "").replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+  return (s || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
 }
-function endpoint(){ return qs("endpoint").value.trim(); }
-function saveEndpoint(){
-  localStorage.setItem(KEY, endpoint());
-  statusMsg("URL guardada.");
+
+function copyUrl(){
+  navigator.clipboard.writeText(ENDPOINT);
+  statusMsg("URL copiada.");
 }
+
 async function api(payload, method="GET"){
-  const url = endpoint();
-  if(!url) throw new Error("Falta la URL /exec.");
-  const opts = method === "POST"
-    ? { method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify(payload) }
-    : undefined;
-  const res = await fetch(method === "GET" ? url + "?action=list" : url, opts);
+  let res;
+
+  if(method === "GET"){
+    res = await fetch(ENDPOINT + "?action=list");
+  } else {
+    res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+  }
+
   return await res.json();
 }
+
 function render(){
   qs("statTotal").textContent = items.length;
   qs("statBuy").textContent = items.filter(x => inferStatus(x) === "Comprar").length;
   qs("statLow").textContent = items.filter(x => inferStatus(x) === "Poco").length;
 
   const shopping = items.filter(x => ["Comprar","Poco"].includes(inferStatus(x)));
-  qs("shopping").innerHTML = shopping.length ? shopping.map(itemHtml).join("") : `<div class="card empty">No hay nada pendiente.</div>`;
-  qs("all").innerHTML = items.length ? items.map(itemHtml).join("") : `<div class="card empty">No hay productos todavía.</div>`;
+  qs("shopping").innerHTML = shopping.length
+    ? shopping.map(itemHtml).join("")
+    : `<div class="card empty">No hay nada pendiente.</div>`;
 
-  qs("quick").innerHTML = `<option value="">Selecciona un producto…</option>` +
+  qs("all").innerHTML = items.length
+    ? items.map(itemHtml).join("")
+    : `<div class="card empty">No hay productos todavía.</div>`;
+
+  qs("quick").innerHTML =
+    `<option value="">Selecciona un producto…</option>` +
     items.map(x => `<option value="${esc(String(x.id))}">${esc(x.name)}</option>`).join("");
 }
+
 function itemHtml(x){
   const st = inferStatus(x);
   const css = st === "Comprar" ? "buy" : st === "Poco" ? "low" : "ok";
+
   return `
     <div class="card item">
       <div>
@@ -240,40 +265,49 @@ function itemHtml(x){
     </div>
   `;
 }
+
 async function loadItems(){
   try{
     statusMsg("Sincronizando…");
     const data = await api(null, "GET");
-    items = (data.items || []).map(x => ({ ...x, durationDays: Number(x.durationDays || 0) }));
+    items = (data.items || []).map(x => ({
+      ...x,
+      durationDays: Number(x.durationDays || 0)
+    }));
     render();
     statusMsg("Sincronizado.");
   }catch(e){
     statusMsg("Error: " + e.message);
   }
 }
+
 async function addItem(){
   const name = qs("name").value.trim();
   if(!name) return alert("Pon un nombre.");
+
   try{
     statusMsg("Guardando…");
     await api({
-      action:"add",
+      action: "add",
       name,
-      category:qs("category").value.trim(),
-      durationDays:qs("days").value.trim(),
-      mercadonaUrl:qs("murl").value.trim(),
-      status:"OK",
-      lastBought:""
+      category: qs("category").value.trim(),
+      durationDays: qs("days").value.trim(),
+      mercadonaUrl: qs("murl").value.trim(),
+      status: "OK",
+      lastBought: ""
     }, "POST");
+
     qs("name").value = "";
     qs("category").value = "";
     qs("days").value = "";
     qs("murl").value = "";
+
     await loadItems();
   }catch(e){
     statusMsg("Error: " + e.message);
   }
 }
+
 async function setStatus(id, status){
   try{
     statusMsg("Actualizando…");
@@ -283,6 +317,7 @@ async function setStatus(id, status){
     statusMsg("Error: " + e.message);
   }
 }
+
 async function markBought(id){
   try{
     statusMsg("Guardando compra…");
@@ -292,8 +327,10 @@ async function markBought(id){
     statusMsg("Error: " + e.message);
   }
 }
+
 async function removeItem(id){
   if(!confirm("¿Borrar este producto?")) return;
+
   try{
     statusMsg("Borrando…");
     await api({ action:"delete", id }, "POST");
@@ -302,18 +339,20 @@ async function removeItem(id){
     statusMsg("Error: " + e.message);
   }
 }
+
 async function quickStatus(status){
   const id = qs("quick").value;
   if(!id) return alert("Selecciona un producto.");
   await setStatus(id, status);
 }
+
 async function quickBought(){
   const id = qs("quick").value;
   if(!id) return alert("Selecciona un producto.");
   await markBought(id);
 }
-qs("endpoint").value = localStorage.getItem(KEY) || "";
-if(qs("endpoint").value) loadItems();
+
+loadItems();
 </script>
 </body>
 </html>
