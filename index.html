@@ -209,7 +209,7 @@ async function api(payload, method="GET"){
   let res;
 
   if(method === "GET"){
-    res = await fetch(ENDPOINT + "?action=list");
+    res = await fetch(ENDPOINT + "?action=list&t=" + Date.now());
   } else {
     res = await fetch(ENDPOINT, {
       method: "POST",
@@ -351,7 +351,49 @@ async function quickBought(){
   if(!id) return alert("Selecciona un producto.");
   await markBought(id);
 }
+async function loadItems(){
+  try{
+    statusMsg("Sincronizando…");
+    const data = await api(null, "GET");
+    items = (data.items || []).map(x => ({
+      ...x,
+      status: String(x.status || "OK").trim(),
+      durationDays: Number(x.durationDays || 0)
+    }));
+    render();
+    statusMsg("Sincronizado.");
+  }catch(e){
+    statusMsg("Error: " + e.message);
+  }
+}
 
+async function setStatus(id, status){
+  try{
+    statusMsg("Actualizando…");
+    const result = await api({ action:"update", id:String(id), status:String(status) }, "POST");
+    if (!result.ok) {
+      statusMsg("No se pudo actualizar.");
+      return;
+    }
+    await loadItems();
+  }catch(e){
+    statusMsg("Error: " + e.message);
+  }
+}
+
+async function markBought(id){
+  try{
+    statusMsg("Guardando compra…");
+    const result = await api({ action:"update", id:String(id), status:"OK", lastBought:todayStr() }, "POST");
+    if (!result.ok) {
+      statusMsg("No se pudo actualizar.");
+      return;
+    }
+    await loadItems();
+  }catch(e){
+    statusMsg("Error: " + e.message);
+  }
+}
 loadItems();
 </script>
 </body>
