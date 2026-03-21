@@ -28,21 +28,22 @@
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif
     }
     body{padding:18px}
-    .wrap{max-width:860px;margin:0 auto}
+    .wrap{max-width:980px;margin:0 auto}
     .hero{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:14px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
     .p16{padding:16px}
     .p20{padding:20px}
     h1{font-size:28px;line-height:1.05;margin:0 0 6px}
     .sub{color:var(--muted);font-size:14px}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
     .stat{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}
     .stat .k{font-size:12px;color:var(--muted)}
-    .stat .v{font-size:28px;font-weight:700;margin-top:4px}
+    .stat .v{font-size:26px;font-weight:700;margin-top:4px}
     .title{font-size:18px;font-weight:700;margin:0 0 12px}
     .grid{display:grid;gap:10px}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    input, select, button{
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    input, select, button, textarea{
       width:100%;
       border-radius:14px;
       border:1px solid var(--line);
@@ -51,19 +52,22 @@
       background:#fff;
       color:var(--text);
     }
+    textarea{min-height:150px;resize:vertical}
     button{
       cursor:pointer;
       font-weight:600;
-      transition:.15s transform ease;
+      transition:.15s transform ease, .15s opacity ease;
     }
     button:active{transform:scale(.99)}
+    button:disabled{opacity:.55;cursor:not-allowed}
     .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
     .btn-low{background:#fff7e6}
     .btn-buy{background:#fff0f0}
+    .btn-soft{background:#fff}
     .toolbar{display:grid;grid-template-columns:1fr auto auto;gap:10px}
     .toolbar button{width:auto;min-width:110px}
     .section{margin-top:14px}
-    .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
     .section-head h2{font-size:18px;margin:0}
     .section-head .hint{font-size:13px;color:var(--muted)}
     .list{display:grid;gap:10px}
@@ -79,15 +83,19 @@
     .muted{color:var(--muted)}
     .empty{padding:24px;text-align:center;color:var(--muted)}
     .statusline{font-size:13px;color:var(--muted);min-height:18px;margin-top:8px}
+    .okmsg{color:#166534}
+    .errmsg{color:#b91c1c}
     a.link{color:#0f766e;text-decoration:none}
     .footer-note{margin-top:14px;font-size:12px;color:var(--muted);text-align:center}
+    .small{font-size:12px;color:var(--muted)}
+    .sep{height:1px;background:var(--line);margin:14px 0}
     @media (max-width: 760px){
       body{padding:12px}
-      .hero,.grid2,.toolbar,.item{grid-template-columns:1fr}
+      .hero,.grid2,.grid3,.toolbar,.item{grid-template-columns:1fr}
       .actions{justify-content:stretch}
       .actions button,.toolbar button{width:100%}
       h1{font-size:24px}
-      .stats{grid-template-columns:repeat(3,1fr)}
+      .stats{grid-template-columns:repeat(2,1fr)}
     }
   </style>
 </head>
@@ -96,20 +104,22 @@
     <div class="hero">
       <div class="card p20">
         <h1>Compra Mercadona</h1>
-        <div class="sub">Lista sincronizada para iPhone y ordenador.</div>
+        <div class="sub">Lista sincronizada para iPhone y ordenador, más rápida y con importación masiva.</div>
         <div class="stats">
           <div class="stat"><div class="k">Productos</div><div class="v" id="statTotal">0</div></div>
           <div class="stat"><div class="k">Comprar</div><div class="v" id="statBuy">0</div></div>
           <div class="stat"><div class="k">Poco</div><div class="v" id="statLow">0</div></div>
+          <div class="stat"><div class="k">Última sync</div><div class="v" id="statSync">—</div></div>
         </div>
       </div>
+
       <div class="card p16">
         <div class="title">Conexión</div>
         <div class="grid">
           <input id="endpoint" value="https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22ro7lwQw5vp2Jy4rWo_fIEKKXLSjKy-CeyhWhAR7sMq6Woy8Q/exec" readonly />
           <div class="grid2">
-            <button class="btn-primary" onclick="loadItems()">Sincronizar</button>
-            <button onclick="copyUrl()">Copiar URL</button>
+            <button class="btn-primary" onclick="loadItems(true)">Sincronizar</button>
+            <button class="btn-soft" onclick="copyUrl()">Copiar URL</button>
           </div>
         </div>
         <div class="statusline" id="status"></div>
@@ -128,6 +138,19 @@
       </div>
       <div style="margin-top:10px">
         <button class="btn-primary" onclick="addItem()">Guardar producto</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="card p16">
+        <div class="title">Carga masiva</div>
+        <div class="small">Formato simple: una línea = un producto</div>
+        <div class="small" style="margin-bottom:8px">Formato avanzado: nombre | categoría | días | url</div>
+        <textarea id="bulkText" placeholder="Leche entera&#10;Huevos&#10;Aceite de oliva 1L&#10;&#10;o bien:&#10;Leche entera | Lácteos | 5 | &#10;Aceite de oliva 1L | Despensa | 45 | https://..."></textarea>
+        <div class="grid2" style="margin-top:10px">
+          <button class="btn-primary" onclick="bulkImport()">Importar líneas</button>
+          <button class="btn-soft" onclick="document.getElementById('bulkText').value=''">Limpiar</button>
+        </div>
       </div>
     </div>
 
@@ -164,15 +187,24 @@
       <div class="list" id="all"></div>
     </div>
 
-    <div class="footer-note">Los datos se guardan en Google Sheets.</div>
+    <div class="footer-note">Los datos reales se guardan en Google Sheets. La app usa una copia local para abrir más rápido.</div>
   </div>
 
 <script>
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22ro7lwQw5vp2Jy4rWo_fIEKKXLSjKy-CeyhWhAR7sMq6Woy8Q/exec";
+const CACHE_KEY = "mercadona_items_cache_v3";
+const SYNC_KEY = "mercadona_last_sync_v3";
+
 let items = [];
+let isRendering = false;
 
 function qs(id){ return document.getElementById(id); }
-function statusMsg(t){ qs("status").textContent = t || ""; }
+
+function setStatusMessage(text, type = ""){
+  const el = qs("status");
+  el.textContent = text || "";
+  el.className = "statusline" + (type === "ok" ? " okmsg" : type === "error" ? " errmsg" : "");
+}
 
 function formatDate(v){
   if(!v) return "—";
@@ -180,18 +212,14 @@ function formatDate(v){
   return isNaN(d) ? v : d.toLocaleDateString("es-ES");
 }
 
-function todayStr(){
-  return new Date().toISOString().slice(0,10);
+function formatDateTime(v){
+  if(!v) return "—";
+  const d = new Date(v);
+  return isNaN(d) ? "—" : d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 }
 
-function inferStatus(x){
-  if (x.status === "Comprar" || x.status === "Poco") return x.status;
-  if (x.lastBought && x.durationDays){
-    const used = Math.floor((new Date() - new Date(x.lastBought)) / 86400000);
-    if (used >= Number(x.durationDays)) return "Comprar";
-    if (used >= Number(x.durationDays) * 0.8) return "Poco";
-  }
-  return "OK";
+function todayStr(){
+  return new Date().toISOString().slice(0,10);
 }
 
 function esc(s){
@@ -202,14 +230,65 @@ function esc(s){
 
 function copyUrl(){
   navigator.clipboard.writeText(ENDPOINT);
-  statusMsg("URL copiada.");
+  setStatusMessage("URL copiada.", "ok");
 }
 
-async function api(payload, method="GET"){
+function saveCache(){
+  localStorage.setItem(CACHE_KEY, JSON.stringify(items));
+  localStorage.setItem(SYNC_KEY, new Date().toISOString());
+}
+
+function loadCache(){
+  try{
+    const raw = localStorage.getItem(CACHE_KEY);
+    if(!raw) return false;
+    const parsed = JSON.parse(raw);
+    if(!Array.isArray(parsed)) return false;
+    items = parsed.map(normalizeItem);
+    render();
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+function getLastSync(){
+  return localStorage.getItem(SYNC_KEY);
+}
+
+function normalizeItem(x){
+  return {
+    id: String(x.id || ""),
+    name: String(x.name || ""),
+    category: String(x.category || ""),
+    status: String(x.status || "OK").trim(),
+    lastBought: x.lastBought || "",
+    durationDays: Number(x.durationDays || 0),
+    mercadonaUrl: String(x.mercadonaUrl || ""),
+    updatedAt: x.updatedAt || ""
+  };
+}
+
+function inferStatus(x){
+  if (x.status === "Comprar" || x.status === "Poco") return x.status;
+  if (x.lastBought && x.durationDays){
+    const last = new Date(x.lastBought);
+    const used = Math.floor((new Date() - last) / 86400000);
+    if (!isNaN(used)) {
+      if (used >= Number(x.durationDays)) return "Comprar";
+      if (used >= Number(x.durationDays) * 0.8) return "Poco";
+    }
+  }
+  return "OK";
+}
+
+async function api(payload, method = "GET"){
   let res;
 
   if(method === "GET"){
-    res = await fetch(ENDPOINT + "?action=list&t=" + Date.now());
+    res = await fetch(ENDPOINT + "?action=list&t=" + Date.now(), {
+      cache: "no-store"
+    });
   } else {
     res = await fetch(ENDPOINT, {
       method: "POST",
@@ -218,15 +297,27 @@ async function api(payload, method="GET"){
     });
   }
 
+  if(!res.ok){
+    throw new Error("HTTP " + res.status);
+  }
+
   return await res.json();
 }
 
 function render(){
-  qs("statTotal").textContent = items.length;
-  qs("statBuy").textContent = items.filter(x => inferStatus(x) === "Comprar").length;
-  qs("statLow").textContent = items.filter(x => inferStatus(x) === "Poco").length;
+  if(isRendering) return;
+  isRendering = true;
 
+  const total = items.length;
+  const buyCount = items.filter(x => inferStatus(x) === "Comprar").length;
+  const lowCount = items.filter(x => inferStatus(x) === "Poco").length;
   const shopping = items.filter(x => ["Comprar","Poco"].includes(inferStatus(x)));
+
+  qs("statTotal").textContent = total;
+  qs("statBuy").textContent = buyCount;
+  qs("statLow").textContent = lowCount;
+  qs("statSync").textContent = formatDateTime(getLastSync());
+
   qs("shopping").innerHTML = shopping.length
     ? shopping.map(itemHtml).join("")
     : `<div class="card empty">No hay nada pendiente.</div>`;
@@ -237,7 +328,13 @@ function render(){
 
   qs("quick").innerHTML =
     `<option value="">Selecciona un producto…</option>` +
-    items.map(x => `<option value="${esc(String(x.id))}">${esc(x.name)}</option>`).join("");
+    items
+      .slice()
+      .sort((a,b) => a.name.localeCompare(b.name, "es"))
+      .map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`)
+      .join("");
+
+  isRendering = false;
 }
 
 function itemHtml(x){
@@ -257,27 +354,42 @@ function itemHtml(x){
         </div>
       </div>
       <div class="actions">
-        <button class="btn-low" onclick="setStatus('${esc(String(x.id))}','Poco')">Poco</button>
-        <button class="btn-buy" onclick="setStatus('${esc(String(x.id))}','Comprar')">Comprar</button>
-        <button class="btn-primary" onclick="markBought('${esc(String(x.id))}')">Comprado</button>
-        <button onclick="removeItem('${esc(String(x.id))}')">Borrar</button>
+        <button class="btn-low" onclick="setStatusFast('${esc(x.id)}','Poco')">Poco</button>
+        <button class="btn-buy" onclick="setStatusFast('${esc(x.id)}','Comprar')">Comprar</button>
+        <button class="btn-primary" onclick="markBoughtFast('${esc(x.id)}')">Comprado</button>
+        <button class="btn-soft" onclick="removeItemFast('${esc(x.id)}')">Borrar</button>
       </div>
     </div>
   `;
 }
 
-async function loadItems(){
+function upsertLocal(updated){
+  const idx = items.findIndex(x => String(x.id) === String(updated.id));
+  if(idx === -1){
+    items.unshift(normalizeItem(updated));
+  } else {
+    items[idx] = normalizeItem({ ...items[idx], ...updated });
+  }
+  saveCache();
+  render();
+}
+
+function removeLocal(id){
+  items = items.filter(x => String(x.id) !== String(id));
+  saveCache();
+  render();
+}
+
+async function loadItems(showMessage = false){
   try{
-    statusMsg("Sincronizando…");
+    if(showMessage) setStatusMessage("Sincronizando…");
     const data = await api(null, "GET");
-    items = (data.items || []).map(x => ({
-      ...x,
-      durationDays: Number(x.durationDays || 0)
-    }));
+    items = (data.items || []).map(normalizeItem);
+    saveCache();
     render();
-    statusMsg("Sincronizado.");
+    if(showMessage) setStatusMessage("Sincronizado.", "ok");
   }catch(e){
-    statusMsg("Error: " + e.message);
+    if(showMessage) setStatusMessage("Error al sincronizar: " + e.message, "error");
   }
 }
 
@@ -285,14 +397,28 @@ async function addItem(){
   const name = qs("name").value.trim();
   if(!name) return alert("Pon un nombre.");
 
+  const tempId = "tmp_" + Date.now();
+  const tempItem = {
+    id: tempId,
+    name,
+    category: qs("category").value.trim(),
+    durationDays: Number(qs("days").value.trim() || 0),
+    mercadonaUrl: qs("murl").value.trim(),
+    status: "OK",
+    lastBought: "",
+    updatedAt: new Date().toISOString()
+  };
+
+  upsertLocal(tempItem);
+  setStatusMessage("Guardando…");
+
   try{
-    statusMsg("Guardando…");
     await api({
       action: "add",
-      name,
-      category: qs("category").value.trim(),
-      durationDays: qs("days").value.trim(),
-      mercadonaUrl: qs("murl").value.trim(),
+      name: tempItem.name,
+      category: tempItem.category,
+      durationDays: tempItem.durationDays,
+      mercadonaUrl: tempItem.mercadonaUrl,
       status: "OK",
       lastBought: ""
     }, "POST");
@@ -302,99 +428,179 @@ async function addItem(){
     qs("days").value = "";
     qs("murl").value = "";
 
-    await loadItems();
+    setStatusMessage("Producto añadido.", "ok");
+    loadItems(false);
   }catch(e){
-    statusMsg("Error: " + e.message);
+    removeLocal(tempId);
+    setStatusMessage("Error al guardar: " + e.message, "error");
   }
 }
 
-async function setStatus(id, status){
+async function setStatusFast(id, status){
+  const prev = items.find(x => String(x.id) === String(id));
+  if(!prev) return;
+
+  const backup = { ...prev };
+  upsertLocal({ ...prev, status });
+
   try{
-    statusMsg("Actualizando…");
-    await api({ action:"update", id, status }, "POST");
-    await loadItems();
+    await api({ action:"update", id:String(id), status:String(status) }, "POST");
+    setStatusMessage("Estado actualizado.", "ok");
+    loadItems(false);
   }catch(e){
-    statusMsg("Error: " + e.message);
+    upsertLocal(backup);
+    setStatusMessage("Error al actualizar: " + e.message, "error");
   }
 }
 
-async function markBought(id){
+async function markBoughtFast(id){
+  const prev = items.find(x => String(x.id) === String(id));
+  if(!prev) return;
+
+  const backup = { ...prev };
+  upsertLocal({
+    ...prev,
+    status: "OK",
+    lastBought: todayStr()
+  });
+
   try{
-    statusMsg("Guardando compra…");
-    await api({ action:"update", id, status:"OK", lastBought:todayStr() }, "POST");
-    await loadItems();
+    await api({
+      action:"update",
+      id:String(id),
+      status:"OK",
+      lastBought:todayStr()
+    }, "POST");
+    setStatusMessage("Compra guardada.", "ok");
+    loadItems(false);
   }catch(e){
-    statusMsg("Error: " + e.message);
+    upsertLocal(backup);
+    setStatusMessage("Error al guardar la compra: " + e.message, "error");
   }
 }
 
-async function removeItem(id){
+async function removeItemFast(id){
   if(!confirm("¿Borrar este producto?")) return;
 
+  const prev = items.find(x => String(x.id) === String(id));
+  if(!prev) return;
+
+  removeLocal(id);
+
   try{
-    statusMsg("Borrando…");
-    await api({ action:"delete", id }, "POST");
-    await loadItems();
+    await api({ action:"delete", id:String(id) }, "POST");
+    setStatusMessage("Producto borrado.", "ok");
+    loadItems(false);
   }catch(e){
-    statusMsg("Error: " + e.message);
+    upsertLocal(prev);
+    setStatusMessage("Error al borrar: " + e.message, "error");
   }
 }
 
 async function quickStatus(status){
   const id = qs("quick").value;
   if(!id) return alert("Selecciona un producto.");
-  await setStatus(id, status);
+  await setStatusFast(id, status);
 }
 
 async function quickBought(){
   const id = qs("quick").value;
   if(!id) return alert("Selecciona un producto.");
-  await markBought(id);
+  await markBoughtFast(id);
 }
-async function loadItems(){
-  try{
-    statusMsg("Sincronizando…");
-    const data = await api(null, "GET");
-    items = (data.items || []).map(x => ({
-      ...x,
-      status: String(x.status || "OK").trim(),
-      durationDays: Number(x.durationDays || 0)
-    }));
-    render();
-    statusMsg("Sincronizado.");
-  }catch(e){
-    statusMsg("Error: " + e.message);
+
+function parseBulkText(text){
+  const lines = text
+    .split("\n")
+    .map(x => x.trim())
+    .filter(Boolean);
+
+  return lines.map(line => {
+    const parts = line.split("|").map(x => x.trim());
+
+    if(parts.length === 1){
+      return {
+        name: parts[0],
+        category: "",
+        durationDays: "",
+        mercadonaUrl: ""
+      };
+    }
+
+    return {
+      name: parts[0] || "",
+      category: parts[1] || "",
+      durationDays: parts[2] || "",
+      mercadonaUrl: parts[3] || ""
+    };
+  }).filter(x => x.name);
+}
+
+async function bulkImport(){
+  const text = qs("bulkText").value.trim();
+  if(!text) return alert("Pega primero una lista.");
+
+  const rows = parseBulkText(text);
+  if(!rows.length) return alert("No hay líneas válidas.");
+
+  if(!confirm(`Se van a importar ${rows.length} productos. ¿Continuar?`)) return;
+
+  setStatusMessage("Importando " + rows.length + " productos…");
+
+  const tempItems = rows.map((row, i) => ({
+    id: "tmp_bulk_" + Date.now() + "_" + i,
+    name: row.name,
+    category: row.category,
+    durationDays: Number(row.durationDays || 0),
+    mercadonaUrl: row.mercadonaUrl,
+    status: "OK",
+    lastBought: "",
+    updatedAt: new Date().toISOString()
+  }));
+
+  items = [...tempItems.map(normalizeItem), ...items];
+  saveCache();
+  render();
+
+  let okCount = 0;
+  let failCount = 0;
+
+  for(const row of rows){
+    try{
+      await api({
+        action: "add",
+        name: row.name,
+        category: row.category,
+        durationDays: row.durationDays,
+        mercadonaUrl: row.mercadonaUrl,
+        status: "OK",
+        lastBought: ""
+      }, "POST");
+      okCount++;
+    }catch(e){
+      failCount++;
+    }
+  }
+
+  qs("bulkText").value = "";
+  await loadItems(false);
+
+  if(failCount === 0){
+    setStatusMessage(`Importación completada: ${okCount} productos.`, "ok");
+  } else {
+    setStatusMessage(`Importación parcial: ${okCount} correctos, ${failCount} con error.`, "error");
   }
 }
 
-async function setStatus(id, status){
-  try{
-    statusMsg("Actualizando…");
-    const result = await api({ action:"update", id:String(id), status:String(status) }, "POST");
-    if (!result.ok) {
-      statusMsg("No se pudo actualizar.");
-      return;
-    }
-    await loadItems();
-  }catch(e){
-    statusMsg("Error: " + e.message);
+(function init(){
+  const hadCache = loadCache();
+  if(hadCache){
+    setStatusMessage("Cargado desde cache local. Sincronizando al fondo…");
+  } else {
+    setStatusMessage("Cargando…");
   }
-}
-
-async function markBought(id){
-  try{
-    statusMsg("Guardando compra…");
-    const result = await api({ action:"update", id:String(id), status:"OK", lastBought:todayStr() }, "POST");
-    if (!result.ok) {
-      statusMsg("No se pudo actualizar.");
-      return;
-    }
-    await loadItems();
-  }catch(e){
-    statusMsg("Error: " + e.message);
-  }
-}
-loadItems();
+  loadItems(!hadCache);
+})();
 </script>
 </body>
 </html>
