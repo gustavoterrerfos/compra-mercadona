@@ -130,6 +130,7 @@
       <div class="title">Añadir producto</div>
       <div class="grid2">
         <input id="name" placeholder="Nombre del producto" />
+        <div id="suggestions" class="small"></div>
         <input id="category" placeholder="Categoría" />
       </div>
       <div class="grid2" style="margin-top:10px">
@@ -232,7 +233,48 @@ function copyUrl(){
   navigator.clipboard.writeText(ENDPOINT);
   setStatusMessage("URL copiada.", "ok");
 }
+function findSimilarProducts(text){
+  const t = text.toLowerCase().trim();
+  if(!t) return [];
+  return items.filter(x => (x.name || "").toLowerCase().includes(t));
+}
 
+function focusProduct(id){
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if(!el) return;
+
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  const oldBoxShadow = el.style.boxShadow;
+  el.style.boxShadow = "0 0 0 3px #93c5fd";
+  setTimeout(() => {
+    el.style.boxShadow = oldBoxShadow;
+  }, 1500);
+}
+
+function updateSuggestions(){
+  const input = document.getElementById("name");
+  const box = document.getElementById("suggestions");
+  const val = input.value.trim();
+
+  if(!val){
+    box.innerHTML = "";
+    return;
+  }
+
+  const matches = findSimilarProducts(val).slice(0,5);
+
+  if(matches.length === 0){
+    box.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = matches.map(x => `
+    <div style="margin-top:6px; cursor:pointer; color:#0f766e;" onclick="focusProduct('${x.id}')">
+      Ya existe: ${x.name}
+    </div>
+  `).join("");
+}
+  
 function saveCache(){
   localStorage.setItem(CACHE_KEY, JSON.stringify(items));
   localStorage.setItem(SYNC_KEY, new Date().toISOString());
@@ -342,7 +384,7 @@ function itemHtml(x){
   const css = st === "Comprar" ? "buy" : st === "Poco" ? "low" : "ok";
 
   return `
-    <div class="card item">
+    <div class="card item" data-id="${x.id}">
       <div>
         <div class="name">${esc(x.name)}</div>
         <div class="meta">
@@ -592,6 +634,8 @@ async function bulkImport(){
   }
 }
 
+document.getElementById("name").addEventListener("input", updateSuggestions);
+  
 (function init(){
   const hadCache = loadCache();
   if(hadCache){
