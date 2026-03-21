@@ -22,7 +22,6 @@
     }
 
     *{box-sizing:border-box}
-
     html,body{
       margin:0;
       padding:0;
@@ -74,6 +73,7 @@
     }
 
     button:active{transform:scale(.99)}
+    button:disabled{opacity:.55;cursor:not-allowed}
 
     .btn-primary{
       background:var(--primary);
@@ -82,9 +82,9 @@
     }
 
     .btn-primary:hover{background:var(--primary-dark)}
-    .btn-low{background:#fff6e8}
     .btn-buy{background:#fff0f0}
     .btn-soft{background:#f8fbfb}
+    .btn-review{background:#fff6e8}
 
     .chips{
       display:flex;
@@ -149,6 +149,7 @@
       border-radius:20px;
       box-shadow:var(--shadow);
       padding:14px;
+      cursor:pointer;
     }
 
     .item-name{
@@ -167,6 +168,7 @@
     .item-actions button{
       width:auto;
       padding:10px 12px;
+      cursor:pointer;
     }
 
     .statusline{
@@ -206,45 +208,12 @@
 
     a.link{color:var(--primary-dark);text-decoration:none}
 
-    .bottom-tabs{
-  position:fixed;
-  left:50%;
-  bottom:12px;
-  transform:translateX(-50%);
-  width:min(720px, calc(100% - 24px));
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  padding:8px;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(12px);
-  border:1px solid var(--line);
-  border-radius:18px;
-  box-shadow:0 10px 30px rgba(23,37,42,.12);
-  z-index:100;
-}
-
-.bottom-tab{
-  border-radius:12px;
-  background:transparent;
-  border:1px solid transparent;
-  padding:10px 8px;
-  font-weight:700;
-  color:var(--muted);
-}
-
-.bottom-tab.active{
-  background:var(--primary);
-  color:white;
-  border-color:var(--primary);
-}
-
     .tab-panel{display:none}
     .tab-panel.active{display:block}
 
     .toolbar{
       display:grid;
-      grid-template-columns:1fr auto auto;
+      grid-template-columns:1fr auto;
       gap:10px;
     }
 
@@ -267,20 +236,113 @@
       margin-bottom:12px;
     }
 
-@media (max-width: 860px){
- .grid2,.grid3,.catalog,.toolbar{
-    grid-template-columns:1fr;
-  }
+    .bottom-tabs{
+      position:fixed;
+      left:50%;
+      bottom:12px;
+      transform:translateX(-50%);
+      width:min(720px, calc(100% - 24px));
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      padding:8px;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(12px);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(23,37,42,.12);
+      z-index:100;
+    }
+
+    .bottom-tab{
+      border-radius:12px;
+      background:transparent;
+      border:1px solid transparent;
+      padding:10px 8px;
+      font-weight:700;
+      color:var(--muted);
+    }
+
+    .bottom-tab.active{
+      background:var(--primary);
+      color:white;
+      border-color:var(--primary);
+    }
+
+    .quick-buttons{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .quick-buttons button{
+      padding:10px 8px;
+      font-size:13px;
+      border-radius:14px;
+    }
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:200;
+    }
+
+    .modal-backdrop.open{display:flex}
+
+    .modal{
+      width:min(700px, 100%);
+      max-height:90vh;
+      overflow:auto;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 20px 50px rgba(15,23,42,.18);
+      padding:18px;
+    }
+
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .modal-title{
+      font-size:20px;
+      font-weight:800;
+      margin:0;
+    }
+
+    .modal-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .modal-actions button{
+      width:auto;
+    }
+
+    @media (max-width: 860px){
+      .grid2,.grid3,.catalog,.toolbar,.quick-buttons{
+        grid-template-columns:1fr;
+      }
 
       .shop-row{
         grid-template-columns:1fr;
       }
 
-      .item-actions button{
+      .item-actions button,.modal-actions button{
         width:100%;
       }
-
-      .hero h1{font-size:25px}
     }
   </style>
 </head>
@@ -291,17 +353,16 @@
       <div class="card">
         <div class="title">Compra rápida</div>
         <div class="toolbar">
-  <select id="quick"></select>
-  <button class="btn-buy" onclick="quickStatus('Comprar')">Comprar</button>
-</div>
-        <div style="margin-top:10px;">
-          <button class="btn-primary" onclick="quickBought()">Comprado</button>
+          <select id="quick"></select>
+          <button class="btn-buy" onclick="quickStatus('Comprar')">Comprar</button>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="title">Lista de compra</div>
-        <div class="hint">Agrupada por categorías para recorrer mejor el súper</div>
+        <div class="quick-buttons">
+          <button class="btn-soft" onclick="quickMarkByName('Leche entera')">Leche</button>
+          <button class="btn-soft" onclick="quickMarkByName('Huevos')">Huevos</button>
+          <button class="btn-soft" onclick="quickMarkByName('Pan de molde')">Pan</button>
+          <button class="btn-soft" onclick="quickMarkByName('Papel higiénico')">Papel</button>
+        </div>
       </div>
 
       <div id="shopping" class="shopping-groups"></div>
@@ -370,19 +431,68 @@
     </section>
 
   </div>
-<div class="bottom-tabs">
-  <button class="bottom-tab active" data-tab="comprar" onclick="showTab('comprar')">Comprar</button>
-  <button class="bottom-tab" data-tab="productos" onclick="showTab('productos')">Productos</button>
-  <button class="bottom-tab" data-tab="anadir" onclick="showTab('anadir')">Añadir</button>
-  <button class="bottom-tab" data-tab="ajustes" onclick="showTab('ajustes')">Ajustes</button>
-</div>
+
+  <div class="bottom-tabs">
+    <button class="bottom-tab active" data-tab="comprar" onclick="showTab('comprar')">Comprar</button>
+    <button class="bottom-tab" data-tab="productos" onclick="showTab('productos')">Productos</button>
+    <button class="bottom-tab" data-tab="anadir" onclick="showTab('anadir')">Añadir</button>
+    <button class="bottom-tab" data-tab="ajustes" onclick="showTab('ajustes')">Ajustes</button>
+  </div>
+
+  <div id="editModalBackdrop" class="modal-backdrop" onclick="closeEditModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <h3 class="modal-title">Editar producto</h3>
+        <button class="btn-soft" style="width:auto;" onclick="forceCloseEditModal()">Cerrar</button>
+      </div>
+
+      <div class="grid2">
+        <input id="editName" placeholder="Nombre" />
+        <input id="editCategory" list="categoryList" placeholder="Categoría" />
+      </div>
+
+      <div class="grid2" style="margin-top:10px;">
+        <input id="editDays" type="number" placeholder="Duración estimada en días" />
+        <input id="editUrl" placeholder="Link de Mercadona" />
+      </div>
+
+      <div class="chips" style="margin-top:12px;" id="editStatusInfo"></div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="saveEdit()">Guardar cambios</button>
+        <button class="btn-soft" onclick="markBoughtFromEdit()">Marcar comprado</button>
+        <button class="btn-buy" onclick="markNeedFromEdit()">Marcar comprar</button>
+        <button class="btn-soft" onclick="deleteFromEdit()">Borrar producto</button>
+      </div>
+    </div>
+  </div>
 
 <script>
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22ro7lwQw5vp2Jy4rWo_fIEKKXLSjKy-CeyhWhAR7sMq6Woy8Q/exec";
-const CACHE_KEY = "mercadona_items_cache_v6";
-const SYNC_KEY = "mercadona_last_sync_v6";
+const CACHE_KEY = "mercadona_items_cache_v7";
+const SYNC_KEY = "mercadona_last_sync_v7";
 
 let items = [];
+let editingId = null;
+
+const CATEGORY_ORDER = [
+  "Fruta",
+  "Verdura",
+  "Fruta y verdura",
+  "Panadería",
+  "Carnicería",
+  "Carne",
+  "Charcutería",
+  "Pescado",
+  "Lácteos",
+  "Huevos",
+  "Despensa",
+  "Congelados",
+  "Bebidas",
+  "Hogar",
+  "Limpieza",
+  "Otros"
+];
 
 function qs(id){ return document.getElementById(id); }
 
@@ -398,12 +508,6 @@ function setStatusMessage(text, type = ""){
   const el = qs("status");
   el.textContent = text || "";
   el.className = "statusline" + (type === "ok" ? " okmsg" : type === "error" ? " errmsg" : "");
-}
-
-function formatTime(v){
-  if(!v) return "—";
-  const d = new Date(v);
-  return isNaN(d) ? "—" : d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 }
 
 function formatDate(v){
@@ -475,10 +579,6 @@ function loadCache(){
   }
 }
 
-function getLastSync(){
-  return localStorage.getItem(SYNC_KEY);
-}
-
 async function api(payload, method = "GET"){
   let res;
 
@@ -542,18 +642,27 @@ function updateSuggestions(){
   `).join("");
 }
 
+function categorySortValue(cat){
+  const normalized = (cat || "Otros").trim();
+  const idx = CATEGORY_ORDER.findIndex(x => x.toLowerCase() === normalized.toLowerCase());
+  return idx === -1 ? 999 : idx;
+}
+
 function renderShoppingCompact(){
   const grouped = {};
 
   items.forEach(x => {
     const st = inferStatus(x);
     if(st === "OK") return;
-    const cat = (x.category || "Otros").trim();
+    const cat = (x.category || "Otros").trim() || "Otros";
     if(!grouped[cat]) grouped[cat] = [];
     grouped[cat].push(x);
   });
 
-  const categories = Object.keys(grouped).sort((a,b) => a.localeCompare(b, "es"));
+  const categories = Object.keys(grouped).sort((a,b) => {
+    const diff = categorySortValue(a) - categorySortValue(b);
+    return diff !== 0 ? diff : a.localeCompare(b, "es");
+  });
 
   if(categories.length === 0){
     qs("shopping").innerHTML = `<div class="empty">No hay nada pendiente.</div>`;
@@ -585,26 +694,24 @@ function itemHtml(x){
   const css = st === "Comprar" ? "buy" : st === "Revisar" ? "review" : "ok";
 
   return `
-    <div class="item-card" data-id="${x.id}">
+    <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
       <div class="item-name">${esc(x.name)}</div>
       <div class="chips">
         <span class="chip ${css}">${st}</span>
         <span class="chip">${esc(x.category || "Sin categoría")}</span>
         <span class="chip">Última compra: ${formatDate(x.lastBought)}</span>
         <span class="chip">Duración: ${x.durationDays || "—"} días</span>
-        ${x.mercadonaUrl ? `<a class="chip link" href="${esc(x.mercadonaUrl)}" target="_blank" rel="noreferrer">Mercadona</a>` : ""}
+        ${x.mercadonaUrl ? `<a class="chip link" href="${esc(x.mercadonaUrl)}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">Mercadona</a>` : ""}
       </div>
-      <div class="item-actions">
-        <button class="btn-low" onclick="setStatusFast('${esc(x.id)}','Poco')">Poco</button>
+      <div class="item-actions" onclick="event.stopPropagation()">
         <button class="btn-buy" onclick="setStatusFast('${esc(x.id)}','Comprar')">Comprar</button>
-<button class="btn-primary" onclick="markBoughtFast('${esc(x.id)}')">Comprado</button>
+        <button class="btn-primary" onclick="markBoughtFast('${esc(x.id)}')">Comprado</button>
       </div>
     </div>
   `;
 }
 
 function render(){
-
   renderShoppingCompact();
 
   const search = (qs("searchProducts")?.value || "").trim().toLowerCase();
@@ -763,10 +870,16 @@ async function quickStatus(status){
   await setStatusFast(id, status);
 }
 
-async function quickBought(){
-  const id = qs("quick").value;
-  if(!id) return alert("Selecciona un producto.");
-  await markBoughtFast(id);
+function quickMarkByName(name){
+  const found = items.find(x => (x.name || "").trim().toLowerCase() === name.toLowerCase());
+  if(!found){
+    showTab("anadir");
+    qs("name").value = name;
+    qs("name").focus();
+    updateSuggestions();
+    return;
+  }
+  setStatusFast(found.id, "Comprar");
 }
 
 function parseBulkText(text){
@@ -828,6 +941,96 @@ async function bulkImport(){
   } else {
     setStatusMessage(`Importación parcial: ${okCount} correctos, ${failCount} con error.`, "error");
   }
+}
+
+function openEditModal(id){
+  const item = items.find(x => String(x.id) === String(id));
+  if(!item) return;
+
+  editingId = item.id;
+  qs("editName").value = item.name || "";
+  qs("editCategory").value = item.category || "";
+  qs("editDays").value = item.durationDays || "";
+  qs("editUrl").value = item.mercadonaUrl || "";
+  qs("editStatusInfo").innerHTML = `
+    <span class="chip ${inferStatus(item) === 'Comprar' ? 'buy' : inferStatus(item) === 'Revisar' ? 'review' : 'ok'}">${inferStatus(item)}</span>
+    <span class="chip">Última compra: ${formatDate(item.lastBought)}</span>
+  `;
+  qs("editModalBackdrop").classList.add("open");
+}
+
+function closeEditModal(event){
+  if(event.target.id === "editModalBackdrop"){
+    forceCloseEditModal();
+  }
+}
+
+function forceCloseEditModal(){
+  editingId = null;
+  qs("editModalBackdrop").classList.remove("open");
+}
+
+async function saveEdit(){
+  if(!editingId) return;
+
+  const existing = items.find(x =>
+    String(x.id) !== String(editingId) &&
+    (x.name || "").trim().toLowerCase() === qs("editName").value.trim().toLowerCase()
+  );
+
+  if(existing){
+    alert("Ya existe otro producto con ese nombre.");
+    return;
+  }
+
+  const prev = items.find(x => String(x.id) === String(editingId));
+  if(!prev) return;
+
+  const updated = {
+    ...prev,
+    name: qs("editName").value.trim(),
+    category: qs("editCategory").value.trim(),
+    durationDays: Number(qs("editDays").value.trim() || 0),
+    mercadonaUrl: qs("editUrl").value.trim()
+  };
+
+  upsertLocal(updated);
+
+  try{
+    await api({
+      action:"update",
+      id:String(editingId),
+      name:updated.name,
+      category:updated.category,
+      durationDays:updated.durationDays,
+      mercadonaUrl:updated.mercadonaUrl
+    }, "POST");
+    setStatusMessage("Producto actualizado.", "ok");
+    forceCloseEditModal();
+    loadItems(false);
+  }catch(e){
+    upsertLocal(prev);
+    setStatusMessage("Error al actualizar: " + e.message, "error");
+  }
+}
+
+async function markBoughtFromEdit(){
+  if(!editingId) return;
+  await markBoughtFast(editingId);
+  forceCloseEditModal();
+}
+
+async function markNeedFromEdit(){
+  if(!editingId) return;
+  await setStatusFast(editingId, "Comprar");
+  forceCloseEditModal();
+}
+
+async function deleteFromEdit(){
+  if(!editingId) return;
+  const id = editingId;
+  forceCloseEditModal();
+  await removeItemFast(id);
 }
 
 qs("name").addEventListener("input", updateSuggestions);
