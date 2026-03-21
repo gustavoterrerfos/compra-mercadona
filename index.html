@@ -15,7 +15,7 @@
       --primary:#2b7a78;
       --primary-dark:#205e5d;
       --ok:#e7f7ef;
-      --low:#fff3d9;
+      --review:#fff3d9;
       --buy:#ffe5e5;
       --shadow:0 10px 24px rgba(23,37,42,.08);
       --radius:22px;
@@ -33,45 +33,6 @@
 
     body{padding:14px}
     .wrap{max-width:1100px;margin:0 auto;padding-bottom:90px}
-
-    .hero{
-      background:linear-gradient(135deg,#2b7a78,#3aafa9);
-      color:white;
-      border-radius:28px;
-      padding:20px;
-      box-shadow:var(--shadow);
-      margin-bottom:14px;
-    }
-
-    .hero h1{
-      margin:0 0 6px;
-      font-size:30px;
-      line-height:1.05;
-    }
-
-    .hero p{
-      margin:0;
-      opacity:.95;
-      font-size:14px;
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:10px;
-      margin-top:16px;
-    }
-
-    .stat{
-      background:rgba(255,255,255,.16);
-      border:1px solid rgba(255,255,255,.22);
-      border-radius:18px;
-      padding:12px;
-      backdrop-filter:blur(4px);
-    }
-
-    .stat .k{font-size:12px;opacity:.9}
-    .stat .v{font-size:25px;font-weight:700;margin-top:4px}
 
     .card{
       background:var(--card);
@@ -140,7 +101,7 @@
     }
 
     .chip.ok{background:var(--ok)}
-    .chip.low{background:var(--low)}
+    .chip.review{background:var(--review)}
     .chip.buy{background:var(--buy)}
 
     .shopping-groups{
@@ -307,7 +268,7 @@
     }
 
 @media (max-width: 860px){
-  .grid2,.grid3,.catalog,.stats,.toolbar{
+ .grid2,.grid3,.catalog,.toolbar{
     grid-template-columns:1fr;
   }
 
@@ -326,27 +287,13 @@
 <body>
   <div class="wrap">
 
-    <div class="hero">
-      <h1>Compra Mercadona</h1>
-      <p>Tu lista visual para casa, móvil y súper.</p>
-      <div class="stats">
-        <div class="stat"><div class="k">Productos</div><div class="v" id="statTotal">0</div></div>
-        <div class="stat"><div class="k">Comprar</div><div class="v" id="statBuy">0</div></div>
-        <div class="stat"><div class="k">Poco</div><div class="v" id="statLow">0</div></div>
-        <div class="stat"><div class="k">Última sync</div><div class="v" id="statSync">—</div></div>
-      </div>
-    </div>
-
-
-
     <section id="tab-comprar" class="tab-panel active">
       <div class="card">
         <div class="title">Compra rápida</div>
         <div class="toolbar">
-          <select id="quick"></select>
-          <button class="btn-low" onclick="quickStatus('Poco')">Poco</button>
-          <button class="btn-buy" onclick="quickStatus('Comprar')">Comprar</button>
-        </div>
+  <select id="quick"></select>
+  <button class="btn-buy" onclick="quickStatus('Comprar')">Comprar</button>
+</div>
         <div style="margin-top:10px;">
           <button class="btn-primary" onclick="quickBought()">Comprado</button>
         </div>
@@ -494,14 +441,18 @@ function normalizeItem(x){
 }
 
 function inferStatus(x){
-  if (x.status === "Comprar" || x.status === "Poco") return x.status;
+  if (x.status === "Comprar") return "Comprar";
+
   if (x.lastBought && x.durationDays){
     const used = Math.floor((new Date() - new Date(x.lastBought)) / 86400000);
-    if (!isNaN(used)) {
-      if (used >= Number(x.durationDays)) return "Comprar";
-      if (used >= Number(x.durationDays) * 0.8) return "Poco";
+    const duration = Number(x.durationDays);
+
+    if (!isNaN(used) && duration > 0) {
+      if (used >= duration) return "Comprar";
+      if (used >= duration * 0.8) return "Revisar";
     }
   }
+
   return "OK";
 }
 
@@ -631,7 +582,7 @@ function renderShoppingCompact(){
 
 function itemHtml(x){
   const st = inferStatus(x);
-  const css = st === "Comprar" ? "buy" : st === "Poco" ? "low" : "ok";
+  const css = st === "Comprar" ? "buy" : st === "Revisar" ? "review" : "ok";
 
   return `
     <div class="item-card" data-id="${x.id}">
@@ -646,18 +597,13 @@ function itemHtml(x){
       <div class="item-actions">
         <button class="btn-low" onclick="setStatusFast('${esc(x.id)}','Poco')">Poco</button>
         <button class="btn-buy" onclick="setStatusFast('${esc(x.id)}','Comprar')">Comprar</button>
-        <button class="btn-primary" onclick="markBoughtFast('${esc(x.id)}')">Comprado</button>
-        <button class="btn-soft" onclick="removeItemFast('${esc(x.id)}')">Borrar</button>
+<button class="btn-primary" onclick="markBoughtFast('${esc(x.id)}')">Comprado</button>
       </div>
     </div>
   `;
 }
 
 function render(){
-  qs("statTotal").textContent = items.length;
-  qs("statBuy").textContent = items.filter(x => inferStatus(x) === "Comprar").length;
-  qs("statLow").textContent = items.filter(x => inferStatus(x) === "Poco").length;
-  qs("statSync").textContent = formatTime(getLastSync());
 
   renderShoppingCompact();
 
