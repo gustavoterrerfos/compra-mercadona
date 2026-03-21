@@ -14,7 +14,6 @@
       --line:#dde7e7;
       --primary:#2b7a78;
       --primary-dark:#205e5d;
-      --accent:#feffff;
       --ok:#e7f7ef;
       --low:#fff3d9;
       --buy:#ffe5e5;
@@ -23,6 +22,7 @@
     }
 
     *{box-sizing:border-box}
+
     html,body{
       margin:0;
       padding:0;
@@ -30,8 +30,10 @@
       color:var(--text);
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
     }
+
     body{padding:14px}
-    .wrap{max-width:1100px;margin:0 auto}
+    .wrap{max-width:1100px;margin:0 auto;padding-bottom:90px}
+
     .hero{
       background:linear-gradient(135deg,#2b7a78,#3aafa9);
       color:white;
@@ -40,22 +42,26 @@
       box-shadow:var(--shadow);
       margin-bottom:14px;
     }
+
     .hero h1{
       margin:0 0 6px;
       font-size:30px;
       line-height:1.05;
     }
+
     .hero p{
       margin:0;
       opacity:.95;
       font-size:14px;
     }
+
     .stats{
       display:grid;
       grid-template-columns:repeat(4,1fr);
       gap:10px;
       margin-top:16px;
     }
+
     .stat{
       background:rgba(255,255,255,.16);
       border:1px solid rgba(255,255,255,.22);
@@ -63,31 +69,30 @@
       padding:12px;
       backdrop-filter:blur(4px);
     }
+
     .stat .k{font-size:12px;opacity:.9}
     .stat .v{font-size:25px;font-weight:700;margin-top:4px}
 
-    .grid{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:14px;
-      margin-bottom:14px;
-    }
     .card{
       background:var(--card);
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       padding:16px;
+      margin-bottom:14px;
     }
+
     .title{
       font-size:18px;
       font-weight:700;
       margin:0 0 12px;
     }
-    .subtle{color:var(--muted);font-size:13px}
+
+    .small{font-size:12px;color:var(--muted)}
+    .hint{font-size:13px;color:var(--muted)}
+    .stack{display:grid;gap:10px}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-    .stack{display:grid;gap:10px}
 
     input, select, button, textarea{
       width:100%;
@@ -98,44 +103,34 @@
       font:inherit;
       color:var(--text);
     }
-    textarea{min-height:140px;resize:vertical}
+
+    textarea{min-height:160px;resize:vertical}
+
     button{
       cursor:pointer;
       font-weight:700;
       transition:.15s ease;
     }
+
     button:active{transform:scale(.99)}
+
     .btn-primary{
       background:var(--primary);
       color:white;
       border-color:var(--primary);
     }
+
     .btn-primary:hover{background:var(--primary-dark)}
     .btn-low{background:#fff6e8}
     .btn-buy{background:#fff0f0}
     .btn-soft{background:#f8fbfb}
-
-    .section{
-      margin-top:14px;
-    }
-    .section-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .section-head h2{
-      margin:0;
-      font-size:18px;
-    }
-    .hint{font-size:13px;color:var(--muted)}
 
     .chips{
       display:flex;
       flex-wrap:wrap;
       gap:8px;
     }
+
     .chip{
       padding:7px 11px;
       border-radius:999px;
@@ -143,6 +138,7 @@
       font-size:12px;
       background:#fff;
     }
+
     .chip.ok{background:var(--ok)}
     .chip.low{background:var(--low)}
     .chip.buy{background:var(--buy)}
@@ -151,6 +147,7 @@
       display:grid;
       gap:12px;
     }
+
     .group-card{
       background:white;
       border:1px solid var(--line);
@@ -158,12 +155,14 @@
       box-shadow:var(--shadow);
       overflow:hidden;
     }
+
     .group-head{
       padding:14px 16px;
       font-weight:800;
       background:#f8fbfb;
       border-bottom:1px solid var(--line);
     }
+
     .shop-row{
       display:grid;
       grid-template-columns:1fr auto;
@@ -172,6 +171,7 @@
       padding:12px 16px;
       border-bottom:1px solid #eef4f4;
     }
+
     .shop-row:last-child{border-bottom:none}
     .shop-name{font-weight:600}
     .shop-state{font-size:12px;color:var(--muted);margin-top:4px}
@@ -181,6 +181,7 @@
       grid-template-columns:repeat(2,1fr);
       gap:12px;
     }
+
     .item-card{
       background:white;
       border:1px solid var(--line);
@@ -188,17 +189,20 @@
       box-shadow:var(--shadow);
       padding:14px;
     }
+
     .item-name{
       font-size:17px;
       font-weight:800;
       margin:0 0 8px;
     }
+
     .item-actions{
       display:flex;
       flex-wrap:wrap;
       gap:8px;
       margin-top:10px;
     }
+
     .item-actions button{
       width:auto;
       padding:10px 12px;
@@ -210,9 +214,10 @@
       min-height:18px;
       color:var(--muted);
     }
+
     .okmsg{color:#166534}
     .errmsg{color:#b91c1c}
-    .small{font-size:12px;color:var(--muted)}
+
     .empty{
       background:white;
       border:1px dashed var(--line);
@@ -221,11 +226,13 @@
       text-align:center;
       color:var(--muted);
     }
+
     .suggestions{
       display:grid;
       gap:6px;
       margin-top:8px;
     }
+
     .suggestion{
       background:#f4fbfb;
       border:1px solid #d9ecec;
@@ -235,18 +242,83 @@
       color:var(--primary-dark);
       font-size:13px;
     }
+
     a.link{color:var(--primary-dark);text-decoration:none}
 
+    .tabs{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:rgba(244,247,247,.92);
+      backdrop-filter:blur(10px);
+      border-radius:20px;
+      padding:8px;
+      margin-bottom:14px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+    }
+
+    .tabs-row{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+    }
+
+    .tab-btn{
+      border-radius:14px;
+      background:#ffffff;
+      border:1px solid var(--line);
+      padding:12px 10px;
+      font-weight:700;
+    }
+
+    .tab-btn.active{
+      background:var(--primary);
+      color:white;
+      border-color:var(--primary);
+    }
+
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    .toolbar{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:10px;
+    }
+
+    .toolbar button{width:auto;min-width:110px}
+
+    details{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:10px 12px;
+      background:#fbfdfd;
+    }
+
+    summary{
+      cursor:pointer;
+      font-weight:700;
+      outline:none;
+    }
+
+    .searchbar{
+      margin-bottom:12px;
+    }
+
     @media (max-width: 860px){
-      .grid,.grid2,.grid3,.catalog,.stats{
+      .grid2,.grid3,.catalog,.stats,.tabs-row,.toolbar{
         grid-template-columns:1fr;
       }
+
       .shop-row{
         grid-template-columns:1fr;
       }
+
       .item-actions button{
         width:100%;
       }
+
       .hero h1{font-size:25px}
     }
   </style>
@@ -265,7 +337,45 @@
       </div>
     </div>
 
-    <div class="grid">
+    <div class="tabs">
+      <div class="tabs-row">
+        <button class="tab-btn active" data-tab="comprar" onclick="showTab('comprar')">Comprar</button>
+        <button class="tab-btn" data-tab="productos" onclick="showTab('productos')">Productos</button>
+        <button class="tab-btn" data-tab="anadir" onclick="showTab('anadir')">Añadir</button>
+        <button class="tab-btn" data-tab="ajustes" onclick="showTab('ajustes')">Ajustes</button>
+      </div>
+    </div>
+
+    <section id="tab-comprar" class="tab-panel active">
+      <div class="card">
+        <div class="title">Compra rápida</div>
+        <div class="toolbar">
+          <select id="quick"></select>
+          <button class="btn-low" onclick="quickStatus('Poco')">Poco</button>
+          <button class="btn-buy" onclick="quickStatus('Comprar')">Comprar</button>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="btn-primary" onclick="quickBought()">Comprado</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Lista de compra</div>
+        <div class="hint">Agrupada por categorías para recorrer mejor el súper</div>
+      </div>
+
+      <div id="shopping" class="shopping-groups"></div>
+    </section>
+
+    <section id="tab-productos" class="tab-panel">
+      <div class="card">
+        <div class="title">Todos los productos</div>
+        <input id="searchProducts" class="searchbar" placeholder="Buscar producto..." oninput="render()" />
+        <div id="all" class="catalog"></div>
+      </div>
+    </section>
+
+    <section id="tab-anadir" class="tab-panel">
       <div class="card">
         <div class="title">Añadir producto</div>
         <div class="grid2">
@@ -278,15 +388,19 @@
             <datalist id="categoryList"></datalist>
           </div>
         </div>
+
         <div class="grid2" style="margin-top:10px;">
           <input id="days" type="number" placeholder="Duración estimada en días" />
           <input id="murl" placeholder="Link de Mercadona (opcional)" />
         </div>
+
         <div style="margin-top:10px;">
           <button class="btn-primary" onclick="addItem()">Guardar producto</button>
         </div>
       </div>
+    </section>
 
+    <section id="tab-ajustes" class="tab-panel">
       <div class="card">
         <div class="title">Conexión</div>
         <div class="stack">
@@ -298,64 +412,41 @@
         </div>
         <div class="statusline" id="status"></div>
       </div>
-    </div>
 
-    <div class="section">
       <div class="card">
-        <div class="title">Carga masiva</div>
-        <div class="small">Formato simple: una línea = un producto</div>
-        <div class="small" style="margin-bottom:8px;">Formato avanzado: nombre | categoría | días | url</div>
-        <textarea id="bulkText" placeholder="Leche entera&#10;Huevos&#10;&#10;o bien:&#10;Leche entera | Lácteos | 5 |"></textarea>
-        <div class="grid2" style="margin-top:10px;">
-          <button class="btn-primary" onclick="bulkImport()">Importar líneas</button>
-          <button class="btn-soft" onclick="document.getElementById('bulkText').value=''">Limpiar</button>
-        </div>
+        <details>
+          <summary>Carga masiva</summary>
+          <div style="margin-top:12px;">
+            <div class="small">Formato simple: una línea = un producto</div>
+            <div class="small" style="margin-bottom:8px;">Formato avanzado: nombre | categoría | días | url</div>
+            <textarea id="bulkText" placeholder="Leche entera&#10;Huevos&#10;&#10;o bien:&#10;Leche entera | Lácteos | 5 |"></textarea>
+            <div class="grid2" style="margin-top:10px;">
+              <button class="btn-primary" onclick="bulkImport()">Importar líneas</button>
+              <button class="btn-soft" onclick="document.getElementById('bulkText').value=''">Limpiar</button>
+            </div>
+          </div>
+        </details>
       </div>
-    </div>
-
-    <div class="section">
-      <div class="section-head">
-        <h2>Lista de compra</h2>
-        <div class="hint">Agrupada por categorías</div>
-      </div>
-      <div id="shopping" class="shopping-groups"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-head">
-        <h2>Compra rápida</h2>
-        <div class="hint">Para móvil o NFC</div>
-      </div>
-      <div class="card">
-        <div class="grid3">
-          <select id="quick"></select>
-          <button class="btn-low" onclick="quickStatus('Poco')">Poco</button>
-          <button class="btn-buy" onclick="quickStatus('Comprar')">Comprar</button>
-        </div>
-        <div style="margin-top:10px;">
-          <button class="btn-primary" onclick="quickBought()">Comprado</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-head">
-        <h2>Todos los productos</h2>
-        <div class="hint">Control general</div>
-      </div>
-      <div id="all" class="catalog"></div>
-    </div>
+    </section>
 
   </div>
 
 <script>
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22ro7lwQw5vp2Jy4rWo_fIEKKXLSjKy-CeyhWhAR7sMq6Woy8Q/exec";
-const CACHE_KEY = "mercadona_items_cache_v5";
-const SYNC_KEY = "mercadona_last_sync_v5";
+const CACHE_KEY = "mercadona_items_cache_v6";
+const SYNC_KEY = "mercadona_last_sync_v6";
 
 let items = [];
 
 function qs(id){ return document.getElementById(id); }
+
+function showTab(tabName){
+  document.querySelectorAll(".tab-panel").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+
+  qs("tab-" + tabName).classList.add("active");
+  document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add("active");
+}
 
 function setStatusMessage(text, type = ""){
   const el = qs("status");
@@ -469,12 +560,15 @@ function findSimilarProducts(text){
 }
 
 function focusProduct(id){
-  const el = document.querySelector(`[data-id="${id}"]`);
-  if(!el) return;
-  el.scrollIntoView({ behavior: "smooth", block: "center" });
-  const old = el.style.boxShadow;
-  el.style.boxShadow = "0 0 0 3px #7ad1cf";
-  setTimeout(() => { el.style.boxShadow = old; }, 1500);
+  showTab("productos");
+  setTimeout(() => {
+    const el = document.querySelector(`[data-id="${id}"]`);
+    if(!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    const old = el.style.boxShadow;
+    el.style.boxShadow = "0 0 0 3px #7ad1cf";
+    setTimeout(() => { el.style.boxShadow = old; }, 1500);
+  }, 80);
 }
 
 function updateSuggestions(){
@@ -568,9 +662,15 @@ function render(){
 
   renderShoppingCompact();
 
-  qs("all").innerHTML = items.length
-    ? items.slice().sort((a,b) => a.name.localeCompare(b.name, "es")).map(itemHtml).join("")
-    : `<div class="empty">No hay productos todavía.</div>`;
+  const search = (qs("searchProducts")?.value || "").trim().toLowerCase();
+  const filtered = items
+    .filter(x => !search || `${x.name} ${x.category}`.toLowerCase().includes(search))
+    .slice()
+    .sort((a,b) => a.name.localeCompare(b.name, "es"));
+
+  qs("all").innerHTML = filtered.length
+    ? filtered.map(itemHtml).join("")
+    : `<div class="empty">No hay productos.</div>`;
 
   qs("quick").innerHTML =
     `<option value="">Selecciona un producto…</option>` +
