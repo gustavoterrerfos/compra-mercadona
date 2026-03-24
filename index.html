@@ -277,7 +277,8 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22r
 const CACHE_KEY = "mercadona_items_cache_multihouse_v1";
 const SYNC_KEY = "mercadona_last_sync_multihouse_v1";
 const ACTIVE_HOUSE_KEY = "mercadona_active_house_v1";
-
+const HOUSES_KEY = "mercadona_houses_v1";
+  
 let items = [];
 let editingId = null;
 let activeHouse = "Casa";
@@ -338,10 +339,30 @@ function normalizeItem(x){
 }
 
 function getHouses(){
-  const houses = [...new Set(items.map(x => (x.house || "Casa").trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b, "es"));
+  const fromItems = [...new Set(items.map(x => (x.house || "Casa").trim()).filter(Boolean))];
+  const fromStorage = JSON.parse(localStorage.getItem(HOUSES_KEY) || '["Casa"]');
+
+  const houses = [...new Set([...fromStorage, ...fromItems])]
+    .filter(Boolean)
+    .sort((a,b) => a.localeCompare(b, "es"));
+
   return houses.length ? houses : ["Casa"];
 }
 
+function saveHouses(houses){
+  localStorage.setItem(HOUSES_KEY, JSON.stringify(houses));
+}
+
+function ensureHouseExists(name){
+  const clean = (name || "").trim();
+  if(!clean) return;
+
+  const houses = getHouses();
+  if(!houses.some(h => h.toLowerCase() === clean.toLowerCase())){
+    saveHouses([...houses, clean]);
+  }
+}
+  
 function saveActiveHouse(){
   localStorage.setItem(ACTIVE_HOUSE_KEY, activeHouse);
 }
@@ -359,19 +380,17 @@ function changeHouse(){
 function createHouse(){
   const name = prompt("Nombre de la nueva casa:");
   if(!name) return;
+
   const clean = name.trim();
   if(!clean) return;
 
+  ensureHouseExists(clean);
+
   const houses = getHouses();
-  if(!houses.some(h => h.toLowerCase() === clean.toLowerCase())){
-    activeHouse = clean;
-    saveActiveHouse();
-    render();
-  } else {
-    activeHouse = houses.find(h => h.toLowerCase() === clean.toLowerCase());
-    saveActiveHouse();
-    render();
-  }
+  activeHouse = houses.find(h => h.toLowerCase() === clean.toLowerCase()) || clean;
+
+  saveActiveHouse();
+  render();
 }
 
 function getVisibleItems(){
@@ -624,6 +643,7 @@ async function addItem(){
   }
 
   const tempId = "tmp_" + Date.now();
+  ensureHouseExists(activeHouse);
   const tempItem = {
     id: tempId,
     house: activeHouse,
@@ -850,6 +870,8 @@ async function saveEdit(){
   const prev = items.find(x => String(x.id) === String(editingId));
   if(!prev) return;
 
+  ensureHouseExists(newHouse);
+  
   const updated = {
     ...prev,
     house: newHouse,
@@ -903,12 +925,19 @@ qs("name").addEventListener("input", updateSuggestions);
 
 (function init(){
   loadActiveHouse();
+
+  if(!localStorage.getItem(HOUSES_KEY)){
+    localStorage.setItem(HOUSES_KEY, JSON.stringify(["Casa"]));
+  }
+
   const hadCache = loadCache();
   if(hadCache){
     setStatusMessage("Cargado desde cache local. Sincronizando al fondo…");
   } else {
     setStatusMessage("Cargando…");
+    render();
   }
+
   loadItems(!hadCache);
 })();
 </script>
