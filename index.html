@@ -136,18 +136,41 @@
       .shop-row{grid-template-columns:1fr}
       .item-actions button,.modal-actions button{width:100%}
     }
+    .house-bar{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:8px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.house-label{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+#activeHouse{
+  padding:10px 12px;
+  border-radius:12px;
+}
+
+.house-add{
+  width:auto;
+  min-width:44px;
+  padding:10px 12px;
+  border-radius:12px;
+}
   </style>
 </head>
 <body>
   <div class="wrap">
 
-    <div class="card">
-      <div class="title">Casa activa</div>
-      <div class="grid2">
-        <select id="activeHouse" onchange="changeHouse()"></select>
-        <button class="btn-soft" onclick="createHouse()">Añadir casa</button>
-      </div>
-    </div>
+<div class="house-bar">
+  <div class="house-label">Casa</div>
+  <select id="activeHouse" onchange="changeHouse()"></select>
+  <button class="btn-soft house-add" onclick="createHouse()">+</button>
+</div>
 
     <section id="tab-comprar" class="tab-panel active">
       <div class="card">
