@@ -601,7 +601,6 @@ function itemHtml(x){
   const st = inferStatus(x);
 
   const isBuy = st === "Comprar" || st === "Revisar";
-
   const nameClass = isBuy ? "buy" : "ok";
 
   const button = isBuy
@@ -617,28 +616,10 @@ function itemHtml(x){
   return `
     <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        
         <div class="item-name ${nameClass}">
           ${esc(x.name)}
         </div>
-
         ${button}
-
-      </div>
-    </div>
-  `;
-}
-
-  return `
-    <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-        
-        <div class="item-name ${css}">
-          ${esc(x.name)}
-        </div>
-
-        ${actionButton}
-
       </div>
     </div>
   `;
