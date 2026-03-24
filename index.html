@@ -78,6 +78,9 @@
       box-shadow:var(--shadow);padding:14px;cursor:pointer;
     }
     .item-name{font-size:17px;font-weight:800;margin:0 0 8px}
+    .item-name.ok{ color:#166534; }
+    .item-name.buy{ color:#b91c1c; }
+    .item-name.review{ color:#b45309; }
     .item-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
     .item-actions button{width:auto;padding:10px 12px;cursor:pointer}
     .statusline{margin-top:8px;font-size:13px;min-height:18px;color:var(--muted)}
@@ -173,12 +176,6 @@
 </div>
 
     <section id="tab-comprar" class="tab-panel active">
-      <div class="card">
-        <div class="title">Compra rápida</div>
-        <div class="toolbar">
-          <select id="quick"></select>
-          <button class="btn-buy" onclick="quickStatus('Comprar')">Comprar</button>
-        </div>
 
         <div class="quick-buttons">
           <button class="btn-soft" onclick="quickMarkByName('Leche entera')">Leche</button>
@@ -194,7 +191,12 @@
     <section id="tab-productos" class="tab-panel">
       <div class="card">
         <div class="title">Todos los productos</div>
-        <input id="searchProducts" class="searchbar" placeholder="Buscar producto..." oninput="render()" />
+        <div class="grid2">
+          <input id="searchProducts" placeholder="Buscar producto..." oninput="render()" />
+          <select id="filterCategory" onchange="render()">
+            <option value="">Todas las categorías</option>
+          </select>
+      </div>
         <div id="all" class="catalog"></div>
       </div>
     </section>
@@ -489,6 +491,13 @@ function updateCategoryList(){
   )].sort((a,b) => a.localeCompare(b, "es"));
 
   qs("categoryList").innerHTML = categories.map(c => `<option value="${esc(c)}">`).join("");
+
+  const categories = [...new Set(getVisibleItems().map(x => (x.category || "").trim()).filter(Boolean))]
+  .sort((a,b) => a.localeCompare(b,"es"));
+
+qs("filterCategory").innerHTML =
+  `<option value="">Todas las categorías</option>` +
+  categories.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
 }
 
 function findSimilarProducts(text){
@@ -520,15 +529,28 @@ function updateSuggestions(){
 
   const matches = findSimilarProducts(val).slice(0,5);
 
-  if(matches.length === 0){
-    box.innerHTML = "";
-    return;
+  if(matches.length > 0){
+    box.innerHTML = matches.map(x => `
+      <div class="suggestion" onclick="focusProduct('${x.id}')">
+        Ya existe en ${esc(activeHouse)}: ${esc(x.name)}
+      </div>
+    `).join("");
+  } else {
+    box.innerHTML = `
+      <div class="suggestion" onclick="createFromInput()">
+        ➕ Crear "${esc(val)}" en ${esc(activeHouse)}
+      </div>
+    `;
   }
-
-  box.innerHTML = matches.map(x => `
-    <div class="suggestion" onclick="focusProduct('${x.id}')">Ya existe en ${esc(activeHouse)}: ${esc(x.name)}</div>
-  `).join("");
 }
+
+function createFromInput(){
+  const name = qs("name").value.trim();
+  if(!name) return;
+
+  qs("category").focus();
+  addItem();
+}  
 
 function categorySortValue(cat){
   const normalized = (cat || "Otros").trim();
@@ -584,23 +606,21 @@ function itemHtml(x){
 
   return `
     <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
-      <div class="item-name">${esc(x.name)}</div>
-      <div class="chips">
-        <span class="chip ${css}">${st}</span>
-        <span class="chip">${esc(x.house || "Casa")}</span>
-        <span class="chip">${esc(x.category || "Sin categoría")}</span>
-        <span class="chip">Última compra: ${formatDate(x.lastBought)}</span>
-        <span class="chip">Duración: ${x.durationDays || "—"} días</span>
-        ${x.mercadonaUrl ? `<a class="chip link" href="${esc(x.mercadonaUrl)}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">Mercadona</a>` : ""}
-      </div>
-      <div class="item-actions" onclick="event.stopPropagation()">
-        <button class="btn-buy" onclick="setStatusFast('${esc(x.id)}','Comprar')">Comprar</button>
-        <button class="btn-primary" onclick="markBoughtFast('${esc(x.id)}')">Comprado</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        
+        <div class="item-name ${css}">
+          ${esc(x.name)}
+        </div>
+
+        <button class="btn-primary" style="width:auto;" onclick="event.stopPropagation(); markBoughtFast('${esc(x.id)}')">
+          ✔
+        </button>
+
       </div>
     </div>
   `;
 }
-
+  
 function render(){
   updateHouseSelectors();
   updateCategoryList();
@@ -608,15 +628,49 @@ function render(){
 
   const visible = getVisibleItems();
   const search = (qs("searchProducts")?.value || "").trim().toLowerCase();
+  const filterCat = qs("filterCategory")?.value || "";
 
   const filtered = visible
-    .filter(x => !search || `${x.name} ${x.category}`.toLowerCase().includes(search))
+    .filter(x =>
+      (!search || `${x.name} ${x.category}`.toLowerCase().includes(search)) &&
+      (!filterCat || (x.category || "") === filterCat)
+    )
     .slice()
     .sort((a,b) => a.name.localeCompare(b.name, "es"));
 
-  qs("all").innerHTML = filtered.length
-    ? filtered.map(itemHtml).join("")
-    : `<div class="empty">No hay productos en ${esc(activeHouse)}.</div>`;
+  if(filtered.length === 0 && search){
+    qs("all").innerHTML = `
+      <div class="empty">
+        No existe "${esc(search)}"<br><br>
+        <button class="btn-primary" onclick="createFromSearch('${esc(search)}')">
+          Crear producto
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  if(filtered.length === 0){
+    qs("all").innerHTML = `<div class="empty">No hay productos en ${esc(activeHouse)}.</div>`;
+    return;
+  }
+
+  const grouped = {};
+
+  filtered.forEach(x => {
+    const cat = (x.category || "Otros").trim() || "Otros";
+    if(!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(x);
+  });
+
+  const categories = Object.keys(grouped).sort((a,b) => a.localeCompare(b,"es"));
+
+  qs("all").innerHTML = categories.map(cat => `
+    <div class="group-card">
+      <div class="group-head">${esc(cat)}</div>
+      ${grouped[cat].map(itemHtml).join("")}
+    </div>
+  `).join("");
 
   qs("quick").innerHTML =
     `<option value="">Selecciona un producto…</option>` +
@@ -624,6 +678,13 @@ function render(){
       .map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
 }
 
+function createFromSearch(text){
+  showTab("anadir");
+  qs("name").value = text;
+  qs("name").focus();
+  updateSuggestions();
+}
+  
 function upsertLocal(updated){
   const idx = items.findIndex(x => String(x.id) === String(updated.id));
   if(idx === -1){
