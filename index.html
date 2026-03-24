@@ -594,18 +594,37 @@ function renderShoppingCompact(){
 
 function itemHtml(x){
   const st = inferStatus(x);
+
   const css = st === "Comprar" ? "buy" : st === "Revisar" ? "review" : "ok";
+
+  let actionButton = "";
+
+  if(st === "Comprar" || st === "Revisar"){
+    actionButton = `
+      <button class="btn-buy" style="width:auto;" 
+        onclick="event.stopPropagation(); setStatusFast('${esc(x.id)}','Comprar')">
+        Comprar
+      </button>
+    `;
+  } else {
+    actionButton = `
+      <button class="btn-primary" style="width:auto;" 
+        onclick="event.stopPropagation(); markBoughtFast('${esc(x.id)}')">
+        ✔
+      </button>
+    `;
+  }
 
   return `
     <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        
         <div class="item-name ${css}">
           ${esc(x.name)}
         </div>
 
-        <button class="btn-primary" style="width:auto;" onclick="event.stopPropagation(); markBoughtFast('${esc(x.id)}')">
-          ✔
-        </button>
+        ${actionButton}
+
       </div>
     </div>
   `;
