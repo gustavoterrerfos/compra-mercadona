@@ -20,334 +20,134 @@
       --shadow:0 10px 24px rgba(23,37,42,.08);
       --radius:22px;
     }
-
     *{box-sizing:border-box}
     html,body{
-      margin:0;
-      padding:0;
-      background:var(--bg);
-      color:var(--text);
+      margin:0;padding:0;background:var(--bg);color:var(--text);
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
     }
-
     body{padding:14px}
     .wrap{max-width:1100px;margin:0 auto;padding-bottom:90px}
-
     .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:16px;
-      margin-bottom:14px;
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:16px;margin-bottom:14px;
     }
-
-    .title{
-      font-size:18px;
-      font-weight:700;
-      margin:0 0 12px;
-    }
-
+    .title{font-size:18px;font-weight:700;margin:0 0 12px}
     .small{font-size:12px;color:var(--muted)}
     .hint{font-size:13px;color:var(--muted)}
     .stack{display:grid;gap:10px}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-
     input, select, button, textarea{
-      width:100%;
-      border:1px solid var(--line);
-      background:white;
-      border-radius:16px;
-      padding:13px 14px;
-      font:inherit;
-      color:var(--text);
+      width:100%;border:1px solid var(--line);background:white;border-radius:16px;
+      padding:13px 14px;font:inherit;color:var(--text);
     }
-
     textarea{min-height:160px;resize:vertical}
-
-    button{
-      cursor:pointer;
-      font-weight:700;
-      transition:.15s ease;
-    }
-
+    button{cursor:pointer;font-weight:700;transition:.15s ease}
     button:active{transform:scale(.99)}
     button:disabled{opacity:.55;cursor:not-allowed}
-
-    .btn-primary{
-      background:var(--primary);
-      color:white;
-      border-color:var(--primary);
-    }
-
+    .btn-primary{background:var(--primary);color:white;border-color:var(--primary)}
     .btn-primary:hover{background:var(--primary-dark)}
     .btn-buy{background:#fff0f0}
     .btn-soft{background:#f8fbfb}
-    .btn-review{background:#fff6e8}
-
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
     .chip{
-      padding:7px 11px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      font-size:12px;
-      background:#fff;
+      padding:7px 11px;border-radius:999px;border:1px solid var(--line);
+      font-size:12px;background:#fff;
     }
-
     .chip.ok{background:var(--ok)}
     .chip.review{background:var(--review)}
     .chip.buy{background:var(--buy)}
-
-    .shopping-groups{
-      display:grid;
-      gap:12px;
-    }
-
+    .shopping-groups{display:grid;gap:12px}
     .group-card{
-      background:white;
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
+      background:white;border:1px solid var(--line);border-radius:20px;
+      box-shadow:var(--shadow);overflow:hidden;
     }
-
     .group-head{
-      padding:14px 16px;
-      font-weight:800;
-      background:#f8fbfb;
-      border-bottom:1px solid var(--line);
+      padding:14px 16px;font-weight:800;background:#f8fbfb;border-bottom:1px solid var(--line)
     }
-
     .shop-row{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:12px;
-      align-items:center;
-      padding:12px 16px;
-      border-bottom:1px solid #eef4f4;
+      display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+      padding:12px 16px;border-bottom:1px solid #eef4f4;
     }
-
     .shop-row:last-child{border-bottom:none}
     .shop-name{font-weight:600}
     .shop-state{font-size:12px;color:var(--muted);margin-top:4px}
-
-    .catalog{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-    }
-
+    .catalog{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     .item-card{
-      background:white;
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:var(--shadow);
-      padding:14px;
-      cursor:pointer;
+      background:white;border:1px solid var(--line);border-radius:20px;
+      box-shadow:var(--shadow);padding:14px;cursor:pointer;
     }
-
-    .item-name{
-      font-size:17px;
-      font-weight:800;
-      margin:0 0 8px;
-    }
-
-    .item-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:10px;
-    }
-
-    .item-actions button{
-      width:auto;
-      padding:10px 12px;
-      cursor:pointer;
-    }
-
-    .statusline{
-      margin-top:8px;
-      font-size:13px;
-      min-height:18px;
-      color:var(--muted);
-    }
-
+    .item-name{font-size:17px;font-weight:800;margin:0 0 8px}
+    .item-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .item-actions button{width:auto;padding:10px 12px;cursor:pointer}
+    .statusline{margin-top:8px;font-size:13px;min-height:18px;color:var(--muted)}
     .okmsg{color:#166534}
     .errmsg{color:#b91c1c}
-
     .empty{
-      background:white;
-      border:1px dashed var(--line);
-      border-radius:18px;
-      padding:24px;
-      text-align:center;
-      color:var(--muted);
+      background:white;border:1px dashed var(--line);border-radius:18px;
+      padding:24px;text-align:center;color:var(--muted);
     }
-
-    .suggestions{
-      display:grid;
-      gap:6px;
-      margin-top:8px;
-    }
-
+    .suggestions{display:grid;gap:6px;margin-top:8px}
     .suggestion{
-      background:#f4fbfb;
-      border:1px solid #d9ecec;
-      border-radius:14px;
-      padding:9px 12px;
-      cursor:pointer;
-      color:var(--primary-dark);
-      font-size:13px;
+      background:#f4fbfb;border:1px solid #d9ecec;border-radius:14px;
+      padding:9px 12px;cursor:pointer;color:var(--primary-dark);font-size:13px;
     }
-
     a.link{color:var(--primary-dark);text-decoration:none}
-
     .tab-panel{display:none}
     .tab-panel.active{display:block}
-
-    .toolbar{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:10px;
-    }
-
+    .toolbar{display:grid;grid-template-columns:1fr auto;gap:10px}
     .toolbar button{width:auto;min-width:110px}
-
     details{
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:10px 12px;
-      background:#fbfdfd;
+      border:1px solid var(--line);border-radius:16px;padding:10px 12px;background:#fbfdfd;
     }
-
-    summary{
-      cursor:pointer;
-      font-weight:700;
-      outline:none;
-    }
-
-    .searchbar{
-      margin-bottom:12px;
-    }
-
+    summary{cursor:pointer;font-weight:700;outline:none}
+    .searchbar{margin-bottom:12px}
     .bottom-tabs{
-      position:fixed;
-      left:50%;
-      bottom:12px;
-      transform:translateX(-50%);
-      width:min(720px, calc(100% - 24px));
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      padding:8px;
-      background:rgba(255,255,255,.92);
-      backdrop-filter:blur(12px);
-      border:1px solid var(--line);
-      border-radius:18px;
-      box-shadow:0 10px 30px rgba(23,37,42,.12);
+      position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
+      width:min(720px, calc(100% - 24px));display:grid;grid-template-columns:repeat(4,1fr);
+      gap:8px;padding:8px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+      border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(23,37,42,.12);
       z-index:100;
     }
-
     .bottom-tab{
-      border-radius:12px;
-      background:transparent;
-      border:1px solid transparent;
-      padding:10px 8px;
-      font-weight:700;
-      color:var(--muted);
+      border-radius:12px;background:transparent;border:1px solid transparent;
+      padding:10px 8px;font-weight:700;color:var(--muted);
     }
-
-    .bottom-tab.active{
-      background:var(--primary);
-      color:white;
-      border-color:var(--primary);
-    }
-
-    .quick-buttons{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      margin-top:10px;
-    }
-
-    .quick-buttons button{
-      padding:10px 8px;
-      font-size:13px;
-      border-radius:14px;
-    }
-
+    .bottom-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+    .quick-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+    .quick-buttons button{padding:10px 8px;font-size:13px;border-radius:14px}
     .modal-backdrop{
-      position:fixed;
-      inset:0;
-      background:rgba(15,23,42,.35);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
-      z-index:200;
+      position:fixed;inset:0;background:rgba(15,23,42,.35);display:none;
+      align-items:center;justify-content:center;padding:16px;z-index:200;
     }
-
     .modal-backdrop.open{display:flex}
-
     .modal{
-      width:min(700px, 100%);
-      max-height:90vh;
-      overflow:auto;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:0 20px 50px rgba(15,23,42,.18);
-      padding:18px;
+      width:min(700px, 100%);max-height:90vh;overflow:auto;background:#fff;border:1px solid var(--line);
+      border-radius:24px;box-shadow:0 20px 50px rgba(15,23,42,.18);padding:18px;
     }
-
     .modal-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:12px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;
     }
-
-    .modal-title{
-      font-size:20px;
-      font-weight:800;
-      margin:0;
-    }
-
-    .modal-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .modal-actions button{
-      width:auto;
-    }
-
+    .modal-title{font-size:20px;font-weight:800;margin:0}
+    .modal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .modal-actions button{width:auto}
     @media (max-width: 860px){
-      .grid2,.grid3,.catalog,.toolbar,.quick-buttons{
-        grid-template-columns:1fr;
-      }
-
-      .shop-row{
-        grid-template-columns:1fr;
-      }
-
-      .item-actions button,.modal-actions button{
-        width:100%;
-      }
+      .grid2,.grid3,.catalog,.toolbar,.quick-buttons{grid-template-columns:1fr}
+      .shop-row{grid-template-columns:1fr}
+      .item-actions button,.modal-actions button{width:100%}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
+
+    <div class="card">
+      <div class="title">Casa activa</div>
+      <div class="grid2">
+        <select id="activeHouse" onchange="changeHouse()"></select>
+        <button class="btn-soft" onclick="createHouse()">Añadir casa</button>
+      </div>
+    </div>
 
     <section id="tab-comprar" class="tab-panel active">
       <div class="card">
@@ -456,6 +256,11 @@
         <input id="editUrl" placeholder="Link de Mercadona" />
       </div>
 
+      <div class="grid2" style="margin-top:10px;">
+        <select id="editHouse"></select>
+        <input id="editStatusReadonly" readonly />
+      </div>
+
       <div class="chips" style="margin-top:12px;" id="editStatusInfo"></div>
 
       <div class="modal-actions">
@@ -469,29 +274,17 @@
 
 <script>
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbzi6WZp6g42qZOmQUcH22ro7lwQw5vp2Jy4rWo_fIEKKXLSjKy-CeyhWhAR7sMq6Woy8Q/exec";
-const CACHE_KEY = "mercadona_items_cache_v7";
-const SYNC_KEY = "mercadona_last_sync_v7";
+const CACHE_KEY = "mercadona_items_cache_multihouse_v1";
+const SYNC_KEY = "mercadona_last_sync_multihouse_v1";
+const ACTIVE_HOUSE_KEY = "mercadona_active_house_v1";
 
 let items = [];
 let editingId = null;
+let activeHouse = "Casa";
 
 const CATEGORY_ORDER = [
-  "Fruta",
-  "Verdura",
-  "Fruta y verdura",
-  "Panadería",
-  "Carnicería",
-  "Carne",
-  "Charcutería",
-  "Pescado",
-  "Lácteos",
-  "Huevos",
-  "Despensa",
-  "Congelados",
-  "Bebidas",
-  "Hogar",
-  "Limpieza",
-  "Otros"
+  "Fruta","Verdura","Fruta y verdura","Panadería","Carnicería","Carne","Charcutería",
+  "Pescado","Lácteos","Huevos","Despensa","Congelados","Bebidas","Hogar","Limpieza","Otros"
 ];
 
 function qs(id){ return document.getElementById(id); }
@@ -499,7 +292,6 @@ function qs(id){ return document.getElementById(id); }
 function showTab(tabName){
   document.querySelectorAll(".tab-panel").forEach(el => el.classList.remove("active"));
   document.querySelectorAll(".bottom-tab").forEach(el => el.classList.remove("active"));
-
   qs("tab-" + tabName).classList.add("active");
   document.querySelector(`.bottom-tab[data-tab="${tabName}"]`).classList.add("active");
 }
@@ -534,6 +326,7 @@ function copyUrl(){
 function normalizeItem(x){
   return {
     id: String(x.id || ""),
+    house: String(x.house || "Casa"),
     name: String(x.name || ""),
     category: String(x.category || ""),
     status: String(x.status || "OK").trim(),
@@ -542,6 +335,47 @@ function normalizeItem(x){
     mercadonaUrl: String(x.mercadonaUrl || ""),
     updatedAt: x.updatedAt || ""
   };
+}
+
+function getHouses(){
+  const houses = [...new Set(items.map(x => (x.house || "Casa").trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b, "es"));
+  return houses.length ? houses : ["Casa"];
+}
+
+function saveActiveHouse(){
+  localStorage.setItem(ACTIVE_HOUSE_KEY, activeHouse);
+}
+
+function loadActiveHouse(){
+  activeHouse = localStorage.getItem(ACTIVE_HOUSE_KEY) || "Casa";
+}
+
+function changeHouse(){
+  activeHouse = qs("activeHouse").value || "Casa";
+  saveActiveHouse();
+  render();
+}
+
+function createHouse(){
+  const name = prompt("Nombre de la nueva casa:");
+  if(!name) return;
+  const clean = name.trim();
+  if(!clean) return;
+
+  const houses = getHouses();
+  if(!houses.some(h => h.toLowerCase() === clean.toLowerCase())){
+    activeHouse = clean;
+    saveActiveHouse();
+    render();
+  } else {
+    activeHouse = houses.find(h => h.toLowerCase() === clean.toLowerCase());
+    saveActiveHouse();
+    render();
+  }
+}
+
+function getVisibleItems(){
+  return items.filter(x => (x.house || "Casa") === activeHouse);
 }
 
 function inferStatus(x){
@@ -596,9 +430,21 @@ async function api(payload, method = "GET"){
   return await res.json();
 }
 
+function updateHouseSelectors(){
+  const houses = getHouses();
+  qs("activeHouse").innerHTML = houses.map(h => `<option value="${esc(h)}">${esc(h)}</option>`).join("");
+  if(!houses.includes(activeHouse)) activeHouse = houses[0];
+  qs("activeHouse").value = activeHouse;
+
+  if(qs("editHouse")){
+    qs("editHouse").innerHTML = houses.map(h => `<option value="${esc(h)}">${esc(h)}</option>`).join("");
+  }
+}
+
 function updateCategoryList(){
-  const categories = [...new Set(items.map(x => (x.category || "").trim()).filter(Boolean))]
-    .sort((a,b) => a.localeCompare(b, "es"));
+  const categories = [...new Set(
+    getVisibleItems().map(x => (x.category || "").trim()).filter(Boolean)
+  )].sort((a,b) => a.localeCompare(b, "es"));
 
   qs("categoryList").innerHTML = categories.map(c => `<option value="${esc(c)}">`).join("");
 }
@@ -606,7 +452,7 @@ function updateCategoryList(){
 function findSimilarProducts(text){
   const t = text.toLowerCase().trim();
   if(!t) return [];
-  return items.filter(x => (x.name || "").toLowerCase().includes(t));
+  return getVisibleItems().filter(x => (x.name || "").toLowerCase().includes(t));
 }
 
 function focusProduct(id){
@@ -638,7 +484,7 @@ function updateSuggestions(){
   }
 
   box.innerHTML = matches.map(x => `
-    <div class="suggestion" onclick="focusProduct('${x.id}')">Ya existe: ${esc(x.name)}</div>
+    <div class="suggestion" onclick="focusProduct('${x.id}')">Ya existe en ${esc(activeHouse)}: ${esc(x.name)}</div>
   `).join("");
 }
 
@@ -650,8 +496,9 @@ function categorySortValue(cat){
 
 function renderShoppingCompact(){
   const grouped = {};
+  const visible = getVisibleItems();
 
-  items.forEach(x => {
+  visible.forEach(x => {
     const st = inferStatus(x);
     if(st === "OK") return;
     const cat = (x.category || "Otros").trim() || "Otros";
@@ -665,7 +512,7 @@ function renderShoppingCompact(){
   });
 
   if(categories.length === 0){
-    qs("shopping").innerHTML = `<div class="empty">No hay nada pendiente.</div>`;
+    qs("shopping").innerHTML = `<div class="empty">No hay nada pendiente en ${esc(activeHouse)}.</div>`;
     return;
   }
 
@@ -698,6 +545,7 @@ function itemHtml(x){
       <div class="item-name">${esc(x.name)}</div>
       <div class="chips">
         <span class="chip ${css}">${st}</span>
+        <span class="chip">${esc(x.house || "Casa")}</span>
         <span class="chip">${esc(x.category || "Sin categoría")}</span>
         <span class="chip">Última compra: ${formatDate(x.lastBought)}</span>
         <span class="chip">Duración: ${x.durationDays || "—"} días</span>
@@ -712,24 +560,26 @@ function itemHtml(x){
 }
 
 function render(){
+  updateHouseSelectors();
+  updateCategoryList();
   renderShoppingCompact();
 
+  const visible = getVisibleItems();
   const search = (qs("searchProducts")?.value || "").trim().toLowerCase();
-  const filtered = items
+
+  const filtered = visible
     .filter(x => !search || `${x.name} ${x.category}`.toLowerCase().includes(search))
     .slice()
     .sort((a,b) => a.name.localeCompare(b.name, "es"));
 
   qs("all").innerHTML = filtered.length
     ? filtered.map(itemHtml).join("")
-    : `<div class="empty">No hay productos.</div>`;
+    : `<div class="empty">No hay productos en ${esc(activeHouse)}.</div>`;
 
   qs("quick").innerHTML =
     `<option value="">Selecciona un producto…</option>` +
-    items.slice().sort((a,b) => a.name.localeCompare(b.name, "es"))
+    visible.slice().sort((a,b) => a.name.localeCompare(b.name, "es"))
       .map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
-
-  updateCategoryList();
 }
 
 function upsertLocal(updated){
@@ -766,15 +616,17 @@ async function addItem(){
   const name = qs("name").value.trim();
   if(!name) return alert("Pon un nombre.");
 
-  const exactExists = items.some(x => (x.name || "").trim().toLowerCase() === name.toLowerCase());
+  const visible = getVisibleItems();
+  const exactExists = visible.some(x => (x.name || "").trim().toLowerCase() === name.toLowerCase());
   if(exactExists){
-    alert("Ese producto ya existe.");
+    alert("Ese producto ya existe en esta casa.");
     return;
   }
 
   const tempId = "tmp_" + Date.now();
   const tempItem = {
     id: tempId,
+    house: activeHouse,
     name,
     category: qs("category").value.trim(),
     durationDays: Number(qs("days").value.trim() || 0),
@@ -790,6 +642,7 @@ async function addItem(){
   try{
     await api({
       action: "add",
+      house: tempItem.house,
       name: tempItem.name,
       category: tempItem.category,
       durationDays: tempItem.durationDays,
@@ -871,7 +724,8 @@ async function quickStatus(status){
 }
 
 function quickMarkByName(name){
-  const found = items.find(x => (x.name || "").trim().toLowerCase() === name.toLowerCase());
+  const visible = getVisibleItems();
+  const found = visible.find(x => (x.name || "").trim().toLowerCase() === name.toLowerCase());
   if(!found){
     showTab("anadir");
     qs("name").value = name;
@@ -906,7 +760,7 @@ async function bulkImport(){
   const rows = parseBulkText(text);
   if(!rows.length) return alert("No hay líneas válidas.");
 
-  if(!confirm(`Se van a importar ${rows.length} productos. ¿Continuar?`)) return;
+  if(!confirm(`Se van a importar ${rows.length} productos en ${activeHouse}. ¿Continuar?`)) return;
 
   setStatusMessage("Importando " + rows.length + " productos…");
 
@@ -915,11 +769,12 @@ async function bulkImport(){
 
   for(const row of rows){
     try{
-      const exists = items.some(x => (x.name || "").trim().toLowerCase() === row.name.toLowerCase());
+      const exists = getVisibleItems().some(x => (x.name || "").trim().toLowerCase() === row.name.toLowerCase());
       if(exists) continue;
 
       await api({
         action: "add",
+        house: activeHouse,
         name: row.name,
         category: row.category,
         durationDays: row.durationDays,
@@ -952,8 +807,13 @@ function openEditModal(id){
   qs("editCategory").value = item.category || "";
   qs("editDays").value = item.durationDays || "";
   qs("editUrl").value = item.mercadonaUrl || "";
+  qs("editHouse").innerHTML = getHouses().map(h => `<option value="${esc(h)}">${esc(h)}</option>`).join("");
+  qs("editHouse").value = item.house || "Casa";
+  qs("editStatusReadonly").value = inferStatus(item);
+
   qs("editStatusInfo").innerHTML = `
     <span class="chip ${inferStatus(item) === 'Comprar' ? 'buy' : inferStatus(item) === 'Revisar' ? 'review' : 'ok'}">${inferStatus(item)}</span>
+    <span class="chip">Casa: ${esc(item.house || 'Casa')}</span>
     <span class="chip">Última compra: ${formatDate(item.lastBought)}</span>
   `;
   qs("editModalBackdrop").classList.add("open");
@@ -973,13 +833,17 @@ function forceCloseEditModal(){
 async function saveEdit(){
   if(!editingId) return;
 
+  const newName = qs("editName").value.trim();
+  const newHouse = qs("editHouse").value.trim() || "Casa";
+
   const existing = items.find(x =>
     String(x.id) !== String(editingId) &&
-    (x.name || "").trim().toLowerCase() === qs("editName").value.trim().toLowerCase()
+    (x.house || "Casa").trim().toLowerCase() === newHouse.toLowerCase() &&
+    (x.name || "").trim().toLowerCase() === newName.toLowerCase()
   );
 
   if(existing){
-    alert("Ya existe otro producto con ese nombre.");
+    alert("Ya existe otro producto con ese nombre en esa casa.");
     return;
   }
 
@@ -988,7 +852,8 @@ async function saveEdit(){
 
   const updated = {
     ...prev,
-    name: qs("editName").value.trim(),
+    house: newHouse,
+    name: newName,
     category: qs("editCategory").value.trim(),
     durationDays: Number(qs("editDays").value.trim() || 0),
     mercadonaUrl: qs("editUrl").value.trim()
@@ -1000,6 +865,7 @@ async function saveEdit(){
     await api({
       action:"update",
       id:String(editingId),
+      house:updated.house,
       name:updated.name,
       category:updated.category,
       durationDays:updated.durationDays,
@@ -1036,6 +902,7 @@ async function deleteFromEdit(){
 qs("name").addEventListener("input", updateSuggestions);
 
 (function init(){
+  loadActiveHouse();
   const hadCache = loadCache();
   if(hadCache){
     setStatusMessage("Cargado desde cache local. Sincronizando al fondo…");
