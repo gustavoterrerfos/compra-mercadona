@@ -117,8 +117,6 @@
       padding:10px 8px;font-weight:700;color:var(--muted);
     }
     .bottom-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
-    .quick-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-    .quick-buttons button{padding:10px 8px;font-size:13px;border-radius:14px}
     .modal-backdrop{
       position:fixed;inset:0;background:rgba(15,23,42,.35);display:none;
       align-items:center;justify-content:center;padding:16px;z-index:200;
@@ -135,7 +133,7 @@
     .modal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
     .modal-actions button{width:auto}
     @media (max-width: 860px){
-      .grid2,.grid3,.catalog,.toolbar,.quick-buttons{grid-template-columns:1fr}
+      .grid2,.grid3,.catalog,.toolbar{grid-template-columns:1fr}
       .shop-row{grid-template-columns:1fr}
       .item-actions button,.modal-actions button{width:100%}
     }
@@ -175,18 +173,9 @@
   <button class="btn-soft house-add" onclick="createHouse()">+</button>
 </div>
 
-    <section id="tab-comprar" class="tab-panel active">
-
-        <div class="quick-buttons">
-          <button class="btn-soft" onclick="quickMarkByName('Leche entera')">Leche</button>
-          <button class="btn-soft" onclick="quickMarkByName('Huevos')">Huevos</button>
-          <button class="btn-soft" onclick="quickMarkByName('Pan de molde')">Pan</button>
-          <button class="btn-soft" onclick="quickMarkByName('Papel higiénico')">Papel</button>
-        </div>
-      </div>
-
-      <div id="shopping" class="shopping-groups"></div>
-    </section>
+<section id="tab-comprar" class="tab-panel active">
+  <div id="shopping" class="shopping-groups"></div>
+</section>
 
     <section id="tab-productos" class="tab-panel">
       <div class="card">
@@ -490,14 +479,17 @@ function updateCategoryList(){
     getVisibleItems().map(x => (x.category || "").trim()).filter(Boolean)
   )].sort((a,b) => a.localeCompare(b, "es"));
 
-  qs("categoryList").innerHTML = categories.map(c => `<option value="${esc(c)}">`).join("");
+  qs("categoryList").innerHTML =
+    categories.map(c => `<option value="${esc(c)}">`).join("");
 
-  const categories = [...new Set(getVisibleItems().map(x => (x.category || "").trim()).filter(Boolean))]
-  .sort((a,b) => a.localeCompare(b,"es"));
+  if(qs("filterCategory")){
+    const currentValue = qs("filterCategory").value || "";
+    qs("filterCategory").innerHTML =
+      `<option value="">Todas las categorías</option>` +
+      categories.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
 
-qs("filterCategory").innerHTML =
-  `<option value="">Todas las categorías</option>` +
-  categories.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+    qs("filterCategory").value = categories.includes(currentValue) ? currentValue : "";
+  }
 }
 
 function findSimilarProducts(text){
@@ -607,7 +599,6 @@ function itemHtml(x){
   return `
     <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-        
         <div class="item-name ${css}">
           ${esc(x.name)}
         </div>
@@ -615,7 +606,6 @@ function itemHtml(x){
         <button class="btn-primary" style="width:auto;" onclick="event.stopPropagation(); markBoughtFast('${esc(x.id)}')">
           ✔
         </button>
-
       </div>
     </div>
   `;
@@ -671,11 +661,6 @@ function render(){
       ${grouped[cat].map(itemHtml).join("")}
     </div>
   `).join("");
-
-  qs("quick").innerHTML =
-    `<option value="">Selecciona un producto…</option>` +
-    visible.slice().sort((a,b) => a.name.localeCompare(b.name, "es"))
-      .map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
 }
 
 function createFromSearch(text){
@@ -821,24 +806,7 @@ async function removeItemFast(id){
   }
 }
 
-async function quickStatus(status){
-  const id = qs("quick").value;
-  if(!id) return alert("Selecciona un producto.");
-  await setStatusFast(id, status);
-}
 
-function quickMarkByName(name){
-  const visible = getVisibleItems();
-  const found = visible.find(x => (x.name || "").trim().toLowerCase() === name.toLowerCase());
-  if(!found){
-    showTab("anadir");
-    qs("name").value = name;
-    qs("name").focus();
-    updateSuggestions();
-    return;
-  }
-  setStatusFast(found.id, "Comprar");
-}
 
 function parseBulkText(text){
   const lines = text.split("\n").map(x => x.trim()).filter(Boolean);
