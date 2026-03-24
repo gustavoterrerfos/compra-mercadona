@@ -73,11 +73,16 @@
     .shop-name{font-weight:600}
     .shop-state{font-size:12px;color:var(--muted);margin-top:4px}
     .catalog{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .item-card{
-      background:white;border:1px solid var(--line);border-radius:20px;
-      box-shadow:var(--shadow);padding:14px;cursor:pointer;
-    }
-    .item-name{font-size:17px;font-weight:800;margin:0 0 8px}
+.item-card{
+  background:white;border:1px solid var(--line);border-radius:20px;
+  box-shadow:var(--shadow);padding:12px 14px;cursor:pointer;
+}
+
+.item-name{
+  font-size:16px;
+  font-weight:800;
+  margin:0;
+}
     .item-name.ok{ color:#166534; }
     .item-name.buy{ color:#b91c1c; }
     .item-name.review{ color:#b45309; }
@@ -595,25 +600,34 @@ function renderShoppingCompact(){
 function itemHtml(x){
   const st = inferStatus(x);
 
-  const css = st === "Comprar" ? "buy" : st === "Revisar" ? "review" : "ok";
+  const isBuy = st === "Comprar" || st === "Revisar";
 
-  let actionButton = "";
+  const nameClass = isBuy ? "buy" : "ok";
 
-  if(st === "Comprar" || st === "Revisar"){
-    actionButton = `
-      <button class="btn-buy" style="width:auto;" 
-        onclick="event.stopPropagation(); setStatusFast('${esc(x.id)}','Comprar')">
-        Comprar
-      </button>
-    `;
-  } else {
-    actionButton = `
-      <button class="btn-primary" style="width:auto;" 
-        onclick="event.stopPropagation(); markBoughtFast('${esc(x.id)}')">
-        ✔
-      </button>
-    `;
-  }
+  const button = isBuy
+    ? `<button class="btn-buy" style="width:auto;font-size:18px;"
+         onclick="event.stopPropagation(); markBoughtFast('${esc(x.id)}')">
+         🛒
+       </button>`
+    : `<button class="btn-soft" style="width:auto;font-size:18px;"
+         onclick="event.stopPropagation(); setStatusFast('${esc(x.id)}','Comprar')">
+         ✔
+       </button>`;
+
+  return `
+    <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        
+        <div class="item-name ${nameClass}">
+          ${esc(x.name)}
+        </div>
+
+        ${button}
+
+      </div>
+    </div>
+  `;
+}
 
   return `
     <div class="item-card" data-id="${x.id}" onclick="openEditModal('${esc(x.id)}')">
